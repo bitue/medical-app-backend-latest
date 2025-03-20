@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
+}
+
+// docker command for
+
+// {
+//   "extends": "./tsconfig.json",
+//   "compilerOptions": {
+//     "outDir": "./dist",
+//     "rootDir": "./src"
+//   },
+//   "exclude": ["node_modules", "test", "dist", "**/*spec.ts"],
+//   "include": ["src"]
+// }
+
+
+// sudo systemctl start postgresql
