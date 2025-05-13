@@ -1,5 +1,10 @@
-
-import { BadRequestException, Body, Controller, InternalServerErrorException, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  InternalServerErrorException,
+  Post,
+} from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { CreateUserDto } from 'src/users/dtos/create-users.dto';
 import { User } from 'src/users/users.entity';
@@ -8,14 +13,20 @@ import { Serialize } from 'src/common/interceptors/serialize.interceptor';
 import { AuthDto } from './dtos/auth.dto';
 import { ApiResponse } from '@nestjs/swagger';
 import { LoginDto } from 'src/users/dtos/login.dto';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { MessageService } from 'src/message/message.service';
 import { DoctorService } from '@/doctor/doctor.service';
 import { PatientService } from '@/patient/patient.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService, private messageService: MessageService, private readonly doctorService: DoctorService, private readonly patientService: PatientService) { }
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+    private messageService: MessageService,
+    private readonly doctorService: DoctorService,
+    private readonly patientService: PatientService,
+  ) {}
 
   @Post('signup')
   @ApiResponse({
@@ -29,12 +40,13 @@ export class AuthController {
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
         email: 'john@example.com',
         username: 'john_doe',
-      }
+      },
     },
   })
   @ApiResponse({
     status: 400,
-    description: 'Bad Request. User already exists or password confirmation does not match.',
+    description:
+      'Bad Request. User already exists or password confirmation does not match.',
     type: AuthDto,
     example: {
       code: 400,
@@ -53,16 +65,15 @@ export class AuthController {
     },
   })
   async signup(@Body() createUserDto: CreateUserDto): Promise<AuthDto> {
-
-
-
     const existingUser = await this.usersService.findOne(createUserDto.email);
 
     if (existingUser) {
       throw new BadRequestException('User already exists!');
     }
     if (createUserDto?.password !== createUserDto?.confirmPassword) {
-      throw new BadRequestException("Password and confirm password does't match!");
+      throw new BadRequestException(
+        "Password and confirm password does't match!",
+      );
     }
 
     const data = await this.messageService.findOne(createUserDto.email);
@@ -74,7 +85,7 @@ export class AuthController {
     const user = await this.usersService.create(createUserDto);
     const token = await this.jwtService.signAsync(
       { id: user.id, email: user.email, username: user.username },
-      { expiresIn: '7d' }
+      { expiresIn: '7d' },
     );
 
     let newUser;
@@ -84,16 +95,22 @@ export class AuthController {
     }
 
     if (createUserDto?.role === 'patient') {
-      newUser = await this.patientService.create({ user: user })
+      newUser = await this.patientService.create({ user: user });
     }
 
     return {
       code: '201',
       message: 'User successfully signed up.',
-      data: { token, email: user.email, username: user.username, id: user?.id, role: user?.role, patientOrDoctorId: newUser?.id },
-      status: true
-    }
-
+      data: {
+        token,
+        email: user.email,
+        username: user.username,
+        id: user?.id,
+        role: user?.role,
+        patientOrDoctorId: newUser?.id,
+      },
+      status: true,
+    };
   }
 
   @Post('signin')
@@ -108,7 +125,7 @@ export class AuthController {
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
         email: 'john@example.com',
         username: 'john_doe',
-      }
+      },
     },
   })
   @ApiResponse({
@@ -136,8 +153,15 @@ export class AuthController {
     if (!user) {
       throw new BadRequestException('Invalid credentials!');
     }
-    const token = this.jwtService.sign({ id: user.id, email: user.email, username: user.username });
-    const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
+    const token = this.jwtService.sign({
+      id: user.id,
+      email: user.email,
+      username: user.username,
+    });
+    const isPasswordValid = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
 
     if (!isPasswordValid) {
       throw new BadRequestException('Invalid credentials!');
@@ -150,16 +174,20 @@ export class AuthController {
     }
 
     if (user?.role === 'patient') {
-      newUser = await this.patientService.findByUserId(user?.id)
+      newUser = await this.patientService.findByUserId(user?.id);
     }
     return {
       code: '200',
       message: 'User successfully sign in!.',
-      data: { token, email: user.email, username: user.username, id: user?.id, role: user?.role, patientOrDoctorId: newUser?.id },
-      status: true
-    }
+      data: {
+        token,
+        email: user.email,
+        username: user.username,
+        id: user?.id,
+        role: user?.role,
+        patientOrDoctorId: newUser?.id,
+      },
+      status: true,
+    };
   }
 }
-
-
-

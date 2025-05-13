@@ -5,7 +5,7 @@ import { User, UserRole } from 'src/users/users.entity';
 import { Doctor } from 'src/doctor/doctor.entity';
 import { Education } from 'src/education/education.entity';
 import { Experience } from 'src/experience/experience.entity';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class SeedService {
@@ -13,7 +13,8 @@ export class SeedService {
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Doctor) private doctorRepo: Repository<Doctor>,
     @InjectRepository(Education) private educationRepo: Repository<Education>,
-    @InjectRepository(Experience) private experienceRepo: Repository<Experience>,
+    @InjectRepository(Experience)
+    private experienceRepo: Repository<Experience>,
   ) {}
 
   async seedDoctors() {
@@ -60,4 +61,3 @@ export class SeedService {
     return { message: '20 doctors seeded successfully!' };
   }
 }
-
