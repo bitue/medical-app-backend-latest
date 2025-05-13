@@ -6,18 +6,16 @@ import { CreateAdminDto } from './dtos/create-admin.dto';
 
 @Injectable()
 export class AdminService {
-    constructor(
-        @InjectRepository(Admin)
-        private adminRepository: Repository<Admin>,
-    ) { }
+  constructor(
+    @InjectRepository(Admin) private adminRepository: Repository<Admin>,
+  ) {}
 
+  async create(createAdminDto: CreateAdminDto): Promise<Admin> {
+    const admin = this.adminRepository.create(createAdminDto);
+    return this.adminRepository.save(admin);
+  }
 
-    async create(createAdminDto: CreateAdminDto): Promise<Admin> {
-        const admin = this.adminRepository.create(createAdminDto);
-        return this.adminRepository.save(admin);
-    }
-
-    async findOne(email: string): Promise<Admin> {
-        return this.adminRepository.findOne({ where: { email } });
-    }
+  async findOne(email: string): Promise<Admin> {
+    return this.adminRepository.findOne({ where: { email } });
+  }
 }
