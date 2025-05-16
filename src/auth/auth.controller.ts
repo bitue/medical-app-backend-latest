@@ -29,41 +29,6 @@ export class AuthController {
   ) {}
 
   @Post('signup')
-  @ApiResponse({
-    status: 201,
-    description: 'User successfully signed up.',
-    type: AuthDto,
-    example: {
-      code: 201,
-      message: 'User successfully signed up!',
-      data: {
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-        email: 'john@example.com',
-        username: 'john_doe',
-      },
-    },
-  })
-  @ApiResponse({
-    status: 400,
-    description:
-      'Bad Request. User already exists or password confirmation does not match.',
-    type: AuthDto,
-    example: {
-      code: 400,
-      message: 'User already exists!',
-      data: null,
-    },
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal Server Error. An unexpected error occurred.',
-    type: AuthDto,
-    example: {
-      code: 500,
-      message: 'Internal Server Error!',
-      data: null,
-    },
-  })
   async signup(@Body() createUserDto: CreateUserDto): Promise<AuthDto> {
     const existingUser = await this.usersService.findOne(createUserDto.email);
 
@@ -84,13 +49,18 @@ export class AuthController {
 
     const user = await this.usersService.create(createUserDto);
     const token = await this.jwtService.signAsync(
-      { id: user.id, email: user.email, username: user.username },
+      {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+      },
       { expiresIn: '7d' },
     );
 
     let newUser;
 
-    if (createUserDto.role === 'doctor') {
+    if (createUserDto?.role === 'doctor') {
       newUser = await this.doctorService.create({ user: user });
     }
 
@@ -157,6 +127,7 @@ export class AuthController {
       id: user.id,
       email: user.email,
       username: user.username,
+      role: user.role,
     });
     const isPasswordValid = await bcrypt.compare(
       loginDto.password,

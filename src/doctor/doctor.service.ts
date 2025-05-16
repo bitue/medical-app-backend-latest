@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Doctor } from './doctor.entity';
@@ -14,14 +18,14 @@ export class DoctorService {
     private callGateway: CallGateway,
   ) {}
 
-  async create(createDoctorDto : Partial<CreateDoctorDto>): Promise<Doctor> {
+  async create(createDoctorDto: Partial<CreateDoctorDto>): Promise<Doctor> {
     const doctor = this.doctorRepository.create();
     doctor.user = createDoctorDto.user;
-    if(createDoctorDto.education){
-      doctor.educations = [createDoctorDto.education]
+    if (createDoctorDto.education) {
+      doctor.educations = [createDoctorDto.education];
     }
-    if(createDoctorDto.experience){
-      doctor.experiences = [createDoctorDto.experience]
+    if (createDoctorDto.experience) {
+      doctor.experiences = [createDoctorDto.experience];
     }
     return this.doctorRepository.save(doctor);
   }
@@ -37,39 +41,52 @@ export class DoctorService {
     }));
   }
 
-  async findAll(isApproved?:any): Promise<Doctor[]> {
-    
+  async findAll(isApproved?: any): Promise<Doctor[]> {
     const query = this.doctorRepository
-    .createQueryBuilder('doctor')
-    .leftJoinAndSelect('doctor.educations', 'educations')
-    .leftJoinAndSelect('doctor.experiences', 'experiences')
-    .leftJoin('doctor.user', 'user')
-    .addSelect(['user.id', 'user.username', 'user.email']);
+      .createQueryBuilder('doctor')
+      .leftJoinAndSelect('doctor.educations', 'educations')
+      .leftJoinAndSelect('doctor.experiences', 'experiences')
+      .leftJoin('doctor.user', 'user')
+      .addSelect(['user.id', 'user.username', 'user.email']);
 
-  // Apply the filter only if isApproved is provided
-  if (isApproved !== undefined) {
-    query.where('doctor.isApproved = :isApproved', { isApproved });
-  }
+    // Apply the filter only if isApproved is provided
+    if (isApproved !== undefined) {
+      query.where('doctor.isApproved = :isApproved', { isApproved });
+    }
 
-  return query.getMany();
+    return query.getMany();
   }
   async findByUserId(userId: number): Promise<Doctor | null> {
-    return this.doctorRepository.findOne({ 
-      where: { user: { id: userId } },  // Fix: Query inside the relation
-      relations: ['user', 'educations', 'experiences'] // Fix: Correct relation names
+    return this.doctorRepository.findOne({
+      where: { user: { id: userId } }, // Fix: Query inside the relation
+      relations: ['user', 'educations', 'experiences'], // Fix: Correct relation names
     });
   }
-  
-async findOne(id: number): Promise<Doctor | null> {
-  return this.doctorRepository.findOne({ where: { id } });
-}
+
+  async findDoctorById(id: number): Promise<Doctor | null> {
+    return this.doctorRepository.findOne({
+      where: { id },
+      relations: ['experiences', 'educations'], // Load these relations eagerly
+    });
+  }
+
+  async findDoctorByEmail(email: string): Promise<Doctor | null> {
+    return this.doctorRepository.findOne({
+      where: { user: { email } }, // Query by related user's email
+      relations: ['user', 'experiences', 'educations'], // Include user and relations
+    });
+  }
+
+  async findOne(id: number): Promise<Doctor | null> {
+    return this.doctorRepository.findOne({ where: { id } });
+  }
 
   async update(id: number, doctorData: Partial<Doctor>): Promise<Doctor> {
     const doctor = await this.findOne(id);
-    if(!doctor){
-      throw new BadRequestException('Doctor Not Found!')
+    if (!doctor) {
+      throw new BadRequestException('Doctor Not Found!');
     }
-    Object.assign(doctor, doctorData)
+    Object.assign(doctor, doctorData);
     return this.doctorRepository.save(doctor);
   }
 
@@ -81,5 +98,9 @@ async findOne(id: number): Promise<Doctor | null> {
     doctor.isApproved = true;
     return this.doctorRepository.save(doctor);
   }
-}
 
+  async updateDisapproveStatus(doctor: any): Promise<Doctor> {
+    doctor.isApproved = false;
+    return this.doctorRepository.save(doctor);
+  }
+}

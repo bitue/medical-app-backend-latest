@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -17,7 +16,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-        synchronize: false, // Be cautious about using synchronize in production
+        synchronize: true, // Be cautious about using synchronize in production
         autoLoadEntities: true,
       }),
       inject: [ConfigService],

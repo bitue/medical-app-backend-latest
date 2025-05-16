@@ -16,42 +16,6 @@ export class CurrentMedicationController {
   ) {}
 
   @Post()
-  @ApiBearerAuth()
-  @ApiResponse({
-    status: 201,
-    description: 'Current medication successfully created.',
-    type: CreateCurrentMedicationDto,
-    example: {
-      code: 201,
-      message: 'Current medication data created successfully!',
-      data: {
-        doctorId: '1',
-        doses: [],
-        startDate: '2020-01-01',
-        endDate: '2023-01-01',
-      },
-    },
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Bad Request. Invalid education data.',
-    type: CreateCurrentMedicationDto,
-    example: {
-      code: 400,
-      message: 'Invalid education data!',
-      data: null,
-    },
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal Server Error. An unexpected error occurred.',
-    type: CreateCurrentMedicationDto,
-    example: {
-      code: 500,
-      message: 'Internal Server Error!',
-      data: null,
-    },
-  })
   async create(
     @Body() currentMedicationData: CreateCurrentMedicationDto,
     @CurrentUser() user: User,

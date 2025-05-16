@@ -57,10 +57,10 @@ export class UsersController {
     const user = this.usersService.update(email, userData);
 
     return {
-      code: '200', 
-      message: 'User Role updated successfully!.', 
+      code: '200',
+      message: 'User Role updated successfully!.',
       data: user,
-      status : true
-    }
+      status: true,
+    };
   }
 }
