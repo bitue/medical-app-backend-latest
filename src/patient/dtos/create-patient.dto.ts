@@ -4,7 +4,6 @@ import { CurrentMedication } from 'src/current-medication/current-medication.ent
 import { HealthStatus } from 'src/health-status/health-status.entity';
 import { OperationHistory } from 'src/operation-history/operation-history.entity';
 
-
 export class CreatePatientDto {
   @ApiProperty({
     description: 'The ID of the user associated with the patient',
@@ -16,22 +15,17 @@ export class CreatePatientDto {
     description: 'currentMedication record associated with the patient',
     type: CurrentMedication,
   })
-  currentMedication: CurrentMedication
+  currentMedication: CurrentMedication;
 
   @ApiProperty({
     description: 'operationHistory record associated with the patient',
     type: CurrentMedication,
   })
-  operationHistory: OperationHistory
-
+  operationHistory: OperationHistory;
 
   @ApiProperty({
     description: 'healthStatus record associated with the patient',
-    type: CurrentMedication,
+    type: HealthStatus,
   })
-  healthStatus: HealthStatus
+  healthStatus: HealthStatus;
 }
-
-
-
-
