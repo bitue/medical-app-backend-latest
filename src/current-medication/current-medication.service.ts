@@ -8,21 +8,27 @@ import { Doctor } from 'src/doctor/doctor.entity';
 import { Patient } from 'src/patient/patient.entity';
 
 export interface ICurrentMedication {
-  doctor: Doctor;    // Store full Doctor object
+  doctor: Doctor; // Store full Doctor object
   startDate: Date;
   endDate: Date;
-  doses: string[];
+  doses: string;
+  patient: Patient;
+  isRunning: boolean;
 }
 
 @Injectable()
 export class CurrentMedicationService {
-    constructor(
-        @InjectRepository(CurrentMedication)
-        private readonly currentMedicationRepository: Repository<CurrentMedication>
-      ) {}
+  constructor(
+    @InjectRepository(CurrentMedication)
+    private readonly currentMedicationRepository: Repository<CurrentMedication>,
+  ) {}
 
-      async create(currentMedicationData: ICurrentMedication): Promise<CurrentMedication> {
-        const currentMedication = this.currentMedicationRepository.create(currentMedicationData);
-        return this.currentMedicationRepository.save(currentMedication);
-      }
+  async create(
+    currentMedicationData: ICurrentMedication,
+  ): Promise<CurrentMedication> {
+    const currentMedication = this.currentMedicationRepository.create(
+      currentMedicationData,
+    );
+    return this.currentMedicationRepository.save(currentMedication);
+  }
 }
