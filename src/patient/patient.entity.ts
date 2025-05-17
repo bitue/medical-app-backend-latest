@@ -42,20 +42,66 @@ export class Patient {
   healthStatus: HealthStatus;
 
   @OneToMany(() => Prescription, (prescription) => prescription.patient, {
-    cascade: true, // Automatically persist related prescriptions if a patient is saved
-    onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
+    cascade: true,
+    onDelete: 'CASCADE',
   })
   prescriptions: Prescription[];
 
   @OneToMany(() => Report, (report) => report.patient, {
-    cascade: true, // Automatically persist related prescriptions if a patient is saved
-    onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
+    cascade: true,
+    onDelete: 'CASCADE',
   })
   reports: Report[];
 
   @OneToMany(() => Appointment, (appointment) => appointment.patient, {
-    cascade: true, // Automatically persist related prescriptions if a patient is saved
-    onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
+    cascade: true,
+    onDelete: 'CASCADE',
   })
   appointments: Appointment[];
 }
+
+// @Entity('patients')
+// export class Patient {
+//   @PrimaryGeneratedColumn()
+//   id: number;
+
+//   @OneToOne(() => User)
+//   @JoinColumn()
+//   user: User;
+
+//   @OneToMany(
+//     () => CurrentMedication,
+//     (currentMedication) => currentMedication.patient,
+//   )
+//   currentMedications: CurrentMedication[];
+
+//   @OneToMany(
+//     () => OperationHistory,
+//     (operationHistory) => operationHistory.patient,
+//   )
+//   operationHistories: OperationHistory[];
+
+//   @OneToOne(() => HealthStatus, (healthStatus) => healthStatus.patient, {
+//     cascade: true,
+//   })
+//   @JoinColumn()
+//   healthStatus: HealthStatus;
+
+//   @OneToMany(() => Prescription, (prescription) => prescription.patient, {
+//     cascade: true, // Automatically persist related prescriptions if a patient is saved
+//     onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
+//   })
+//   prescriptions: Prescription[];
+
+//   @OneToMany(() => Report, (report) => report.patient, {
+//     cascade: true, // Automatically persist related prescriptions if a patient is saved
+//     onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
+//   })
+//   reports: Report[];
+
+//   @OneToMany(() => Appointment, (appointment) => appointment.patient, {
+//     cascade: true, // Automatically persist related prescriptions if a patient is saved
+//     onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
+//   })
+//   appointments: Appointment[];
+// }

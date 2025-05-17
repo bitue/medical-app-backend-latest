@@ -1,4 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, ManyToMany, JoinColumn, OneToMany, JoinTable } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  ManyToMany,
+  JoinColumn,
+  OneToMany,
+  JoinTable,
+} from 'typeorm';
 
 import { User } from 'src/users/users.entity';
 import { Education } from 'src/education/education.entity';
@@ -16,7 +25,6 @@ export class Doctor {
   @OneToOne(() => User)
   @JoinColumn()
   user: User;
-  
 
   @ManyToMany(() => Education)
   @JoinTable()
@@ -26,21 +34,61 @@ export class Doctor {
   @JoinTable()
   experiences: Experience[];
 
-  @OneToMany(() => CurrentMedication, currentMedication => currentMedication.doctor)
-  currentMedications: CurrentMedication[];
+  // One Doctor provides many CurrentMedications
+  @OneToMany(
+    () => CurrentMedication,
+    (currentMedication) => currentMedication.doctor,
+  )
+  providedMedications: CurrentMedication[];
 
   @OneToMany(() => Prescription, (prescription) => prescription.doctor, {
-    cascade: true, // Automatically persist related prescriptions if a patient is saved
-    onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
+    cascade: true,
+    onDelete: 'CASCADE',
   })
   prescriptions: Prescription[];
 
   @OneToMany(() => Appointment, (appointment) => appointment.doctor, {
-    cascade: true, // Automatically persist related prescriptions if a patient is saved
-    onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
+    cascade: true,
+    onDelete: 'CASCADE',
   })
   appointments: Appointment[];
 
-  @Column({default : false})
-  isApproved : boolean;
+  @Column({ default: false })
+  isApproved: boolean;
 }
+
+// @Entity()
+// export class Doctor {
+//   @PrimaryGeneratedColumn()
+//   id: number;
+
+//   @OneToOne(() => User)
+//   @JoinColumn()
+//   user: User;
+
+//   @ManyToMany(() => Education)
+//   @JoinTable()
+//   educations: Education[];
+
+//   @ManyToMany(() => Experience)
+//   @JoinTable()
+//   experiences: Experience[];
+
+//   @OneToMany(() => CurrentMedication, currentMedication => currentMedication.doctor)
+//   currentMedications: CurrentMedication[];
+
+//   @OneToMany(() => Prescription, (prescription) => prescription.doctor, {
+//     cascade: true, // Automatically persist related prescriptions if a patient is saved
+//     onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
+//   })
+//   prescriptions: Prescription[];
+
+//   @OneToMany(() => Appointment, (appointment) => appointment.doctor, {
+//     cascade: true, // Automatically persist related prescriptions if a patient is saved
+//     onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
+//   })
+//   appointments: Appointment[];
+
+//   @Column({default : false})
+//   isApproved : boolean;
+// }

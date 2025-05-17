@@ -26,8 +26,8 @@ export class CurrentMedicationController {
         this.doctorService.findOne(currentMedicationData?.doctorId),
       ]);
 
-      if (!doctor) {
-        throw new BadRequestException('Doctor not found!');
+      if (!existingPatient) {
+        throw new BadRequestException('Patient  not found!');
       }
 
       const currentMedication = await this.currentMedicationService.create({
@@ -35,20 +35,23 @@ export class CurrentMedicationController {
         doses: currentMedicationData?.doses,
         startDate: currentMedicationData?.startDate,
         endDate: currentMedicationData?.endDate,
+        isRunning: currentMedicationData.isRunning,
+        patient: existingPatient,
       });
 
-      if (!existingPatient) {
-        await this.patientService.create({ user: user, currentMedication });
-        return {
-          code: '201',
-          message: 'Current medication data created successfully!',
-          data: currentMedication,
-          status: true,
-        };
-      }
+      // if (!existingPatient) {
+      //   await this.patientService.create({ user: user, currentMedication });
+      //   return {
+      //     code: '201',
+      //     message: 'Current medication data created successfully!',
+      //     data: currentMedication,
+      //     status: true,
+      //   };
+      // }
+
       await this.patientService.update(existingPatient.id, {
         currentMedications: [
-          ...existingPatient.currentMedications,
+          ...existingPatient?.currentMedications,
           currentMedication,
         ],
       });

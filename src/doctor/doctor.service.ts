@@ -63,11 +63,24 @@ export class DoctorService {
     });
   }
 
+  // async findDoctorById(id: number): Promise<Doctor | null> {
+  //   return this.doctorRepository.findOne({
+  //     where: { id },
+  //     relations: ['experiences', 'educations', 'current_medications'], // Load these relations eagerly
+  //   });
+  // }
+
   async findDoctorById(id: number): Promise<Doctor | null> {
-    return this.doctorRepository.findOne({
-      where: { id },
-      relations: ['experiences', 'educations'], // Load these relations eagerly
-    });
+    try {
+      return await this.doctorRepository.findOne({
+        where: { id },
+        relations: ['experiences', 'educations'], // use property names from entity, not entity class names
+      });
+    } catch (error) {
+      // Handle error as needed, e.g., log and return null or rethrow
+      console.error('Error finding doctor:', error);
+      return null;
+    }
   }
 
   async findDoctorByEmail(email: string): Promise<Doctor | null> {

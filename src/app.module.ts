@@ -16,7 +16,7 @@ import { PatientModule } from './patient/patient.module';
 import { OperationHistoryModule } from './operation-history/operation-history.module';
 
 import { CallModule } from './call/call.module';
-import { SeedModule } from './seed/seed.module';
+// import { SeedModule } from './seed/seed.module';
 import { S3Module } from './s3/s3.module';
 import { PrescriptionModule } from './prescription/prescription.module';
 import { ReportModule } from './report/report.module';
@@ -49,7 +49,7 @@ import { HealthStatusModule } from './health-status/health-status.module';
     OperationHistoryModule,
     HealthStatusModule,
     CallModule,
-    SeedModule,
+
     S3Module,
     AppointmentModule,
     AdminModule,
