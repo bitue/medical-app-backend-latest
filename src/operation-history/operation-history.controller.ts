@@ -1,10 +1,19 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { OperationHistoryService } from './operation-history.service';
 import { PatientService } from 'src/patient/patient.service';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { CreateOperationHistoryDto } from './dtos/create-operation-history.dto';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { User } from 'src/users/users.entity';
+import { AuthGuard } from '@/common/guards/auth.guard';
+import { RoleGuard } from '@/common/guards/role.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
 
 @Controller('operation-history')
 export class OperationHistoryController {
@@ -14,6 +23,8 @@ export class OperationHistoryController {
   ) {}
 
   @Post()
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('patient')
   async create(
     @Body() operationHistoryData: CreateOperationHistoryDto,
     @CurrentUser() user: User,
