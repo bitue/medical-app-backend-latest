@@ -1,4 +1,10 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CurrentMedicationService } from './current-medication.service';
 import { PatientService } from 'src/patient/patient.service';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
@@ -6,6 +12,7 @@ import { CreateCurrentMedicationDto } from './dtos/create-current-medication.dto
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { User } from 'src/users/users.entity';
 import { DoctorService } from 'src/doctor/doctor.service';
+import { AuthGuard } from '@/common/guards/auth.guard';
 
 @Controller('current-medication')
 export class CurrentMedicationController {
@@ -16,6 +23,7 @@ export class CurrentMedicationController {
   ) {}
 
   @Post()
+  @UseGuards(AuthGuard)
   async create(
     @Body() currentMedicationData: CreateCurrentMedicationDto,
     @CurrentUser() user: User,
