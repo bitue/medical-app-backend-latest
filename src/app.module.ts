@@ -23,6 +23,7 @@ import { ReportModule } from './report/report.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { AdminModule } from './admin/admin.module';
 import { HealthStatusModule } from './health-status/health-status.module';
+import { SpecialtiesModule } from './specialties/specialties.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { HealthStatusModule } from './health-status/health-status.module';
     S3Module,
     AppointmentModule,
     AdminModule,
+    SpecialtiesModule,
   ],
   controllers: [AppController],
   providers: [

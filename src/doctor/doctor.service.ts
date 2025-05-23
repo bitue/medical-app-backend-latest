@@ -1,34 +1,106 @@
 import {
   BadRequestException,
+  Body,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Doctor } from './doctor.entity';
 import { User } from 'src/users/users.entity';
 import { CreateDoctorDto } from './dtos/create-doctor.dto';
 import { CallGateway } from '@/call/call.gateway';
+import { Specialty } from '@/specialties/entities/specialty.entity';
+import { CreateProfileDto } from './dtos/create-profile.dto';
+import { CurrentUser } from '@/common/decorators/current-user.decorator';
 
 @Injectable()
 export class DoctorService {
   constructor(
     @InjectRepository(Doctor)
     private readonly doctorRepository: Repository<Doctor>,
+
     private callGateway: CallGateway,
+
+    @InjectRepository(Specialty)
+    private readonly specialRepository: Repository<Specialty>,
   ) {}
 
   async create(createDoctorDto: Partial<CreateDoctorDto>): Promise<Doctor> {
-    const doctor = this.doctorRepository.create();
-    doctor.user = createDoctorDto.user;
-    if (createDoctorDto.education) {
-      doctor.educations = [createDoctorDto.education];
+    try {
+      const doctor = this.doctorRepository.create();
+      doctor.user = createDoctorDto.user;
+
+      if (createDoctorDto.education) {
+        doctor.educations = [createDoctorDto.education];
+      }
+      if (createDoctorDto.experience) {
+        doctor.experiences = [createDoctorDto.experience];
+      }
+
+      return await this.doctorRepository.save(doctor);
+    } catch (error) {
+      // You can log the error or throw a custom exception here
+      console.error('Error creating doctor:', error);
+      throw new Error('Failed to create doctor');
     }
-    if (createDoctorDto.experience) {
-      doctor.experiences = [createDoctorDto.experience];
+  }
+
+  async crerateDoctorProfile(
+    createProfileDoctor: CreateProfileDto,
+    user: User,
+  ): Promise<Doctor> {
+    const doctor = await this.findByUserId(user.id);
+
+    console.log(doctor, 'form -------------------->>>>>>>>>>>>>>>>>>>');
+
+    doctor.introduction = createProfileDoctor.introduction ?? null;
+    doctor.BMDC = createProfileDoctor.BMDC ?? null;
+    console.log(createProfileDoctor.specialtyIds, 0);
+
+    if (createProfileDoctor.specialtyIds?.length) {
+      console.log(1);
+      const specialties = await this.specialRepository.find({
+        where: {
+          id: In(createProfileDoctor.specialtyIds),
+        },
+      });
+      console.log(specialties, '---------------------------------->>');
+      doctor.specialties = specialties;
+    } else {
+      console.log(2);
+      doctor.specialties = [];
     }
+
     return this.doctorRepository.save(doctor);
   }
+
+  // async create(createDoctorDto: Partial<CreateDoctorDto>): Promise<Doctor> {
+  //   const doctor = this.doctorRepository.create();
+  //   doctor.user = createDoctorDto.user;
+  //   if (createDoctorDto.education) {
+  //     doctor.educations = [createDoctorDto.education];
+  //   }
+  //   if (createDoctorDto.experience) {
+  //     doctor.experiences = [createDoctorDto.experience];
+  //   }
+
+  //   doctor.introduction = createDoctorDto.introduction ?? null;
+  //   doctor.BMDC = createDoctorDto.BMDC ?? null;
+
+  //   if (createDoctorDto.specialtyIds.length) {
+  //     const specialties = await this.specialRepository.find({
+  //       where: {
+  //         id: In(createDoctorDto.specialtyIds),
+  //       },
+  //     });
+  //     doctor.specialties = specialties;
+  //   } else {
+  //     doctor.specialties = [];
+  //   }
+
+  //   return this.doctorRepository.save(doctor);
+  // }
 
   async getAllDoctorsWithStatus() {
     const doctors = await this.findAll();
@@ -46,6 +118,7 @@ export class DoctorService {
       .createQueryBuilder('doctor')
       .leftJoinAndSelect('doctor.educations', 'educations')
       .leftJoinAndSelect('doctor.experiences', 'experiences')
+      .leftJoinAndSelect('doctor.specialties', 'specialties') // Add this line
       .leftJoin('doctor.user', 'user')
       .addSelect(['user.id', 'user.username', 'user.email']);
 

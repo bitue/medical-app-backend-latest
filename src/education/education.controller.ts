@@ -30,6 +30,7 @@ export class EducationController {
     @CurrentUser() user: User,
   ) {
     try {
+      console.log(user, 'from  current user ');
       const [existingDoctor, education] = await Promise.all([
         this.doctorService.findByUserId(user?.id),
         this.educationService.create(educationData),
