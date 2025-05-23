@@ -29,12 +29,18 @@ export class Doctor {
   @JoinColumn()
   user: User;
 
-  @ManyToMany(() => Education)
-  @JoinTable()
+  // @ManyToMany(() => Education)
+  // @JoinTable()
+  // educations: Education[];
+
+  // @ManyToMany(() => Experience)
+  // @JoinTable()
+  // experiences: Experience[];
+
+  @OneToMany(() => Education, (education) => education.doctor)
   educations: Education[];
 
-  @ManyToMany(() => Experience)
-  @JoinTable()
+  @OneToMany(() => Experience, (experience) => experience.doctor)
   experiences: Experience[];
 
   @ManyToMany(() => Specialty)

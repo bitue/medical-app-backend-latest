@@ -8,8 +8,7 @@ import { CreateExperienceDto } from './dtos/create-experience.dto';
 
 @Injectable()
 export class ExperienceService {
-
-     constructor(
+  constructor(
     @InjectRepository(Experience)
     private readonly experienceRepository: Repository<Experience>,
   ) {}
@@ -17,5 +16,10 @@ export class ExperienceService {
   async create(experienceData: CreateExperienceDto): Promise<Experience> {
     const experience = this.experienceRepository.create(experienceData);
     return this.experienceRepository.save(experience);
+  }
+
+  async createMany(experiences: CreateExperienceDto[]): Promise<Experience[]> {
+    const exp = this.experienceRepository.create(experiences);
+    return this.experienceRepository.save(exp);
   }
 }

@@ -27,6 +27,7 @@ import { UsersService } from 'src/users/users.service';
 import { Roles } from '@/common/decorators/roles.decorator';
 import { RoleGuard } from '@/common/guards/role.guard';
 import { CreateProfileDto } from './dtos/create-profile.dto';
+import { CreateDoctorDto } from './dtos/create-doctor.dto';
 
 @Controller('doctors')
 export class DoctorController {
@@ -35,29 +36,61 @@ export class DoctorController {
     private readonly userService: UsersService,
   ) {}
 
+  @Get('searchDoctors')
+  @UseGuards(AuthGuard)
+  async searchDoctors(@Query('keyword') keyword: string): Promise<Doctor[]> {
+    if (!keyword || keyword.trim() === '') {
+      return []; // Return empty if no search keyword provided
+    }
+    return this.doctorService.searchDoctors(keyword.trim());
+  }
+
   @Get()
   async getAllDoctors(@Query() query: any): Promise<Doctor[]> {
     const { isApproved } = query;
     return this.doctorService.findAll(isApproved);
   }
 
-  @Post('addProfileDoctor')
+  @Post('createDoctorProfile')
   @UseGuards(AuthGuard, RoleGuard)
   @Roles('doctor')
-  async addProfileDoctor(
-    @Body() createProfile: CreateProfileDto,
+  async createDoctorProfile(
+    @Body() createDoctorProfile: CreateDoctorDto,
     @CurrentUser() user: User,
   ) {
     try {
-      console.log(user, 'from the current user middleware ');
-      return await this.doctorService.crerateDoctorProfile(createProfile, user);
-    } catch (error) {
-      // Log the error if you want
-      console.error('Error adding doctor profile:', error);
-      // You can throw a NestJS HttpException for better client response
-      throw new InternalServerErrorException('Failed to add doctor profile');
+      if (!user) {
+        throw new NotFoundException('Doctor not found !');
+      }
+
+      createDoctorProfile.user = user;
+
+      return this.doctorService.createDoctorProfile(createDoctorProfile);
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'Failed to add doctor profile ',
+        err.message,
+      );
     }
   }
+
+  // @Post('addProfileDoctor')
+  // @UseGuards(AuthGuard, RoleGuard)
+  // @Roles('doctor')
+  // async addProfileDoctor(
+  //   @Body() createProfile: CreateProfileDto,
+  //   @CurrentUser() user: User,
+  // ) {
+  //   try {
+  //     //    console.log(user, 'from the current user middleware ');
+  //     return await this.doctorService.crerateDoctorProfile(createProfile, user);
+  //   } catch (error) {
+  //     // Log the error if you want
+  //     console.error('Error adding doctor profile:', error);
+  //     // You can throw a NestJS HttpException for better client response
+  //     throw new InternalServerErrorException('Failed to add doctor profile');
+  //   }
+  // }
 
   // @Post('addProfileDoctor')
   // async addProfileDoctor(
