@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import {
+  forwardRef,
+  MiddlewareConsumer,
+  Module,
+  RequestMethod,
+} from '@nestjs/common';
 import { ExperienceService } from './experience.service';
 import { ExperienceController } from './experience.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,15 +14,19 @@ import { DoctorModule } from 'src/doctor/doctor.module';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
-  imports : [TypeOrmModule.forFeature([Experience]), UsersModule, DoctorModule],
+  imports: [TypeOrmModule.forFeature([Experience]), UsersModule],
   providers: [ExperienceService],
-  controllers: [ExperienceController]
+  controllers: [ExperienceController],
+  exports: [ExperienceService],
 })
 export class ExperienceModule {
-   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(CurrentUserMiddleware).exclude(
-      { path: 'experience', method: RequestMethod.GET },
-      'education/{*splat}',
-    ).forRoutes(ExperienceController);
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(CurrentUserMiddleware)
+      .exclude(
+        { path: 'experience', method: RequestMethod.GET },
+        'education/{*splat}',
+      )
+      .forRoutes(ExperienceController);
   }
 }

@@ -15,5 +15,9 @@ export class EducationService {
     const education = this.educationRepository.create(educationData);
     return this.educationRepository.save(education);
   }
-}
 
+  async createMany(educations: CreateEducationDto[]): Promise<Education[]> {
+    const edu = this.educationRepository.create(educations);
+    return this.educationRepository.save(edu);
+  }
+}

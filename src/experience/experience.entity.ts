@@ -1,6 +1,13 @@
-
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn} from 'typeorm';
-
+import { Doctor } from '@/doctor/doctor.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity()
 export class Experience {
@@ -19,4 +26,9 @@ export class Experience {
   @Column()
   endDate: Date;
 
+  @ManyToOne(() => Doctor, (doctor) => doctor.experiences, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  doctor: Doctor;
 }
