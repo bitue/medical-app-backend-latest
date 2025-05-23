@@ -9,6 +9,7 @@ import {
   NotFoundException,
   Query,
   BadRequestException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { Doctor } from './doctor.entity';
@@ -25,6 +26,7 @@ import {
 import { UsersService } from 'src/users/users.service';
 import { Roles } from '@/common/decorators/roles.decorator';
 import { RoleGuard } from '@/common/guards/role.guard';
+import { CreateProfileDto } from './dtos/create-profile.dto';
 
 @Controller('doctors')
 export class DoctorController {
@@ -38,6 +40,32 @@ export class DoctorController {
     const { isApproved } = query;
     return this.doctorService.findAll(isApproved);
   }
+
+  @Post('addProfileDoctor')
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('doctor')
+  async addProfileDoctor(
+    @Body() createProfile: CreateProfileDto,
+    @CurrentUser() user: User,
+  ) {
+    try {
+      console.log(user, 'from the current user middleware ');
+      return await this.doctorService.crerateDoctorProfile(createProfile, user);
+    } catch (error) {
+      // Log the error if you want
+      console.error('Error adding doctor profile:', error);
+      // You can throw a NestJS HttpException for better client response
+      throw new InternalServerErrorException('Failed to add doctor profile');
+    }
+  }
+
+  // @Post('addProfileDoctor')
+  // async addProfileDoctor(
+  //   @Body() createProfile: CreateProfileDto,
+  //   @CurrentUser() user: User,
+  // ) {
+  //   return this.doctorService.crerateDoctorProfile(createProfile, user);
+  // }
 
   @Post('findByEmail')
   @UseGuards(AuthGuard)

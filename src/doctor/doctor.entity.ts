@@ -7,6 +7,8 @@ import {
   JoinColumn,
   OneToMany,
   JoinTable,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 import { User } from 'src/users/users.entity';
@@ -16,6 +18,7 @@ import { CurrentMedication } from 'src/current-medication/current-medication.ent
 import { Prescription } from '@/prescription/prescription.entity';
 import { Report } from '@/report/report.entity';
 import { Appointment } from '@/appointment/appointment.entity';
+import { Specialty } from '@/specialties/entities/specialty.entity';
 
 @Entity()
 export class Doctor {
@@ -33,6 +36,10 @@ export class Doctor {
   @ManyToMany(() => Experience)
   @JoinTable()
   experiences: Experience[];
+
+  @ManyToMany(() => Specialty)
+  @JoinTable()
+  specialties: Specialty[];
 
   // One Doctor provides many CurrentMedications
   @OneToMany(
@@ -55,6 +62,18 @@ export class Doctor {
 
   @Column({ default: false })
   isApproved: boolean;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
+
+  @Column('text', { nullable: true }) // text type, nullable if you want it optional
+  introduction: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true }) // string with max length 255
+  BMDC: string;
 }
 
 // @Entity()

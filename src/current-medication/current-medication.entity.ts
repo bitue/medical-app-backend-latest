@@ -8,9 +8,11 @@ import {
   ManyToOne,
   OneToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
-//===============================================//
+// ==================================================== //
 
 @Entity('current_medications')
 export class CurrentMedication {
@@ -38,6 +40,12 @@ export class CurrentMedication {
 
   @Column({ default: false })
   isRunning: boolean;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 }
 
 // @Entity('current_medications')
