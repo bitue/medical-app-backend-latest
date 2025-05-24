@@ -16,18 +16,13 @@ import { Doctor } from './doctor.entity';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { User } from '@/users/users.entity';
 import { AuthGuard } from 'src/common/guards/auth.guard';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiResponse,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from 'src/users/users.service';
 import { Roles } from '@/common/decorators/roles.decorator';
 import { RoleGuard } from '@/common/guards/role.guard';
 import { CreateProfileDto } from './dtos/create-profile.dto';
 import { CreateDoctorDto } from './dtos/create-doctor.dto';
+import { medicalInstitutes } from '@/utils/medicalCollegeData';
 
 @Controller('doctors')
 export class DoctorController {
@@ -35,6 +30,11 @@ export class DoctorController {
     private readonly doctorService: DoctorService,
     private readonly userService: UsersService,
   ) {}
+
+  @Get('getAllMedicalCollege')
+  async getAllMedicalCollege() {
+    return medicalInstitutes;
+  }
 
   @Get('searchDoctors')
   @UseGuards(AuthGuard)

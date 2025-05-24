@@ -1,0 +1,401 @@
+const data = {
+  message: 'Fields list',
+  data: {
+    genders: [
+      { name: 'Male', value: 'Male' },
+      { name: 'Female', value: 'Female' },
+    ],
+    marital_status: [
+      { name: 'Single', value: 'Single' },
+      { name: 'Married', value: 'Married' },
+      { name: 'Unmentioned', value: 'Unmentioned' },
+    ],
+    videos: [
+      {
+        name: 'doctor_how_it_works',
+        value: 'https://youtu.be/pEqHTDwjU6s',
+      },
+      {
+        name: 'patient_how_it_works',
+        value: 'https://youtu.be/FgJ8aKPeKKA',
+      },
+    ],
+    payments: [
+      { name: 'platform_charge_percentage', value: '23' },
+      { name: 'vat_percentage', value: '5' },
+      { name: 'vat_bin', value: '003522956-0402' },
+    ],
+    phone_numbers: [
+      { name: 'support_phone', value: '01322892462' },
+      { name: 'doctor_support_phone', value: '09677885599' },
+      { name: 'enterprise_support_phone', value: '09677885599' },
+      { name: 'patient_support_phone', value: '09677885599' },
+    ],
+    visiting_methods: [
+      { name: 'Instant-virtual', value: 'instant-virtual' },
+      { name: 'Scheduled-virtual', value: 'scheduled-virtual' },
+      { name: 'Scheduled-physical', value: 'scheduled-physical' },
+    ],
+    contact_us_reasons: [],
+    patient_titles: [
+      { name: 'Miss', value: 'Miss' },
+      { name: 'Mr', value: 'Mr' },
+      { name: 'Mrs', value: 'Mrs' },
+    ],
+    relationships: [
+      { name: 'Husband', value: 'husband', gender: 'Male' },
+      { name: 'Wife', value: 'wife', gender: 'Female' },
+      { name: 'Father', value: 'father', gender: 'Male' },
+      { name: 'Mother', value: 'mother', gender: 'Female' },
+      { name: 'Sister', value: 'sister', gender: 'Female' },
+      { name: 'Brother', value: 'brother', gender: 'Male' },
+      { name: 'Son', value: 'son', gender: 'Male' },
+      { name: 'Daughter', value: 'daughter', gender: 'Female' },
+      { name: 'Grandfather', value: 'grandfather', gender: 'Male' },
+      { name: 'Grandmother', value: 'grandmother', gender: 'Female' },
+      { name: 'Grandson', value: 'grandson', gender: 'Male' },
+      { name: 'Granddaughter', value: 'granddaughter', gender: 'Female' },
+      { name: 'Father-in-law', value: 'father-in-law', gender: 'Male' },
+      { name: 'Mother-in-law', value: 'mother-in-law', gender: 'Female' },
+      { name: 'Son-in-law', value: 'son-in-law', gender: 'Male' },
+      { name: 'Daughter-in-law', value: 'daughter-in-law', gender: 'Female' },
+      { name: 'Niece', value: 'niece', gender: 'Female' },
+      { name: 'Nephew', value: 'nephew', gender: 'Male' },
+      { name: 'Uncle', value: 'uncle', gender: 'Male' },
+      { name: 'Aunt', value: 'aunt', gender: 'Female' },
+      { name: 'Unmentioned', value: 'unmentioned', gender: 'Unisex' },
+    ],
+    symptoms: [
+      {
+        name: 'Sexual problems',
+        value: 2,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/2/icon/nNNY0qgioqKVlejxSVpLujrp5nePxqjtjvD87HdL.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Period problems/Gyne problems',
+        value: 21,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/21/icon/kkDcLM9JCb75mAABEMOAizeHTE4i63I6DgfmDn6z.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Fever, Cold/Flu, Allergy',
+        value: 12,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/12/icon/spM1fDvPtBL2vn53mbnqaPuBOuzMEZI9pooEdc4T.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Child diseases',
+        value: 4,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/4/icon/rLxuYp8DE9x05bjSjUsPZMhppzEU77KIGH4DQWA8.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Pregnancy issues',
+        value: 3,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/3/icon/BpiJ1kqsJ8zyMc810U99NGPJIX9fm7LsFupM1Kak.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Weight lose/gain, Diet chart',
+        value: 13,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/13/icon/2LWGmVbggcROPMik6BcWibRGmURbBo9iOwTmRQuq.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Itching, Acne & Skin problems',
+        value: 10,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/10/icon/eISvNBo4GfaXwBNyweMKo2yT7ISRBDn1ulbaEzaI.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Hair fall and Dandruff',
+        value: 7,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/7/icon/XeE2axQwFyTS1h7x71oKCWjGfSn3BOoZ0ZvPiGRT.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Urine infection or problems',
+        value: 18,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/18/icon/1vMzv3vvVaksuUcdB3X6ZOX6A6tF9eIIkGnC3LCr.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Acidity, Indigestion, Diarrhea, Constipation',
+        value: 14,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/14/icon/iEqVmR51u4vLh8KuvBXCGl8VYcMf76eYlBMxdlrK.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Ear, Nose and Throat diseases',
+        value: 20,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/20/icon/phO3vs7WVsIb3S2wC6JycxLo44b7zfLbXQOW0H9l.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Stress or Depression',
+        value: 11,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/11/icon/hg0guJWFvO5TgSsNEZw5RZNMLse2Wxb4hH0xKJHK.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Anorexia',
+        value: 16,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/16/icon/tXYlAlk3o7f82s35PfjGFFBIV5ThwezvVFENXsyL.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Joint/Muscle pain, Arthritis',
+        value: 6,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/6/icon/dLrUyWd1ZQBznSBZGansQ71j54xW4KyDwmFWK7vg.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Abdominal pain/Body pain',
+        value: 8,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/8/icon/8McX7aDWy5ifWCvgb1RGirpxiJX7BGRgHV1pmzlJ.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Headache or Migraine',
+        value: 1,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/1/icon/ZMbVid19g7rrAfSAWxGk0mnxsiol2Ha0tpAqRLL7.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Breathlessness/Cough/Asthma',
+        value: 22,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/22/icon/Mp3Sd7EXJ6OTpKcnwkokwe96WOiRdb22Mp9g2l3o.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Chest pain/Heart problems',
+        value: 17,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/17/icon/YTA8OHnCWuc9bjw08urjt9EE3D4hMwNrNCKrPMY9.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Eye problems',
+        value: 15,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/15/icon/tuOQI77M7cXFnpYwseq333yJEJBNBLRO6aPJXCnX.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Kidney problems',
+        value: 19,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/19/icon/3DIImlanHMMKyhtHVxv7uUiJkRiItvet7CBiu4Bn.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Uncontrolled Diabetes',
+        value: 9,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/9/icon/yt4inJ5qZOAtgZE7jHEbiN0I9MRrkO4ybdgpawi3.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Blood pressure',
+        value: 5,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/5/icon/HIgcBIQUG57G97dXSrBM216hnCaAuKNxtdcaaql1.png',
+        },
+        is_visible: 1,
+      },
+      {
+        name: 'Piles/Anal fissure',
+        value: 23,
+        icon: {
+          src: 'https://doctime-core-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/images/symptoms/23/icon/Zizs0d6s8oLYu5DYSSMwEYlrzHIDGtzeM7YN3Rjp.png',
+        },
+        is_visible: 1,
+      },
+    ],
+    claim_type: [
+      { name: 'Hospicash', value: 0 },
+      { name: 'IPD', value: 1 },
+      { name: 'General OPD', value: 2 },
+      { name: 'Optical OPD', value: 3 },
+      { name: 'Dental OPD', value: 4 },
+      { name: 'Maternity NVD', value: 5 },
+      { name: 'Maternity LUCS', value: 6 },
+      { name: 'Disability Coverage', value: 7 },
+      { name: 'Life Coverage', value: 8 },
+      { name: 'Accidental Indemnity', value: 9 },
+      { name: 'COVID-19', value: 10 },
+    ],
+    filter_options: [
+      { name: 'fee', value: 'Fees', type: 'range', min: 0, max: 8000 },
+      { name: 'rating', value: 'Rating', type: 'range', min: 0, max: 5 },
+      { name: 'online_now', value: 'Online Now', type: 'boolean' },
+      { name: 'gender', value: 'Gander', type: 'options' },
+      { name: 'specialities', value: 'Specialities', type: 'options' },
+      {
+        name: 'available_in_next_2_hours',
+        value: 'Available in next 2 hours',
+        type: 'boolean',
+      },
+      { name: 'available_today', value: 'Available today', type: 'boolean' },
+      { name: 'free', value: 'Free doctors only', type: 'boolean' },
+    ],
+    order_by: [
+      { name: 'Relevance', value: '' },
+      { name: 'Popularity', value: 'popularity' },
+      { name: 'Fees: low to high', value: 'fees_asc' },
+      { name: 'Fees: high to low', value: 'fees_desc' },
+      { name: 'Rating', value: 'rating_desc' },
+      { name: 'Experience', value: 'experience' },
+      { name: 'Specialist First', value: 'grouped' },
+      { name: 'Ranking', value: 'ranking' },
+    ],
+    visit_reasons: [
+      { name: 'Cold, cough, and/or fever', value: 1 },
+      { name: 'Headaches and/or migraines', value: 2 },
+      { name: 'Diarrhea / Vomiting', value: 3 },
+      { name: 'Diabetes / Blood pressure', value: 4 },
+      { name: 'Sex issue', value: 5 },
+      { name: "Children's health", value: 6 },
+      { name: 'Ear, Nose & Throat Problems', value: 7 },
+      { name: 'Female health / Pregnancy / Gyne', value: 8 },
+      { name: 'Pain', value: 9 },
+      { name: 'Skin issues', value: 10 },
+      { name: 'Back problems', value: 11 },
+      { name: 'Mental health issues', value: 12 },
+      { name: 'Other', value: 13 },
+    ],
+    visit_types: [
+      { name: 'New', value: 'new' },
+      { name: 'Returning', value: 'returning' },
+    ],
+    subscription_plan_targeted_group: [
+      { name: 'General', value: 'general' },
+      { name: 'Banglalink', value: 'banglalink' },
+    ],
+    lead_sources: [
+      { name: 'Md Salman', value: 'MDSALMAN' },
+      { name: 'Md semi', value: 'MDSEMI' },
+      { name: 'Mohammad Shohidul Islam', value: 'MOHAMMADSHOHIDULISLAM' },
+      { name: 'Havas', value: 'HAVAS' },
+      { name: 'Azmaeen Pharma', value: 'AZMAEENPHARMA' },
+      { name: 'Madina Pharmacy', value: 'MADINAPHARMACY' },
+      { name: 'Maa Drugs House', value: 'MAADRUGSHOUSE' },
+      { name: 'campaign', value: 'CAMPAIGN' },
+      { name: 'Kawsar Babu', value: 'KAWSARBABU' },
+      { name: 'Mizanur Shamim', value: 'MIZANURSHAMIM' },
+      { name: 'Md Shahin Alam', value: 'MDSHAHINALAM' },
+      { name: 'Stamford', value: 'STAMFORD' },
+      { name: 'Atish Dipankar University', value: 'ATISHDIPANKARUNIVERSITY' },
+      {
+        name: 'United International University',
+        value: 'UNITEDINTERNATIONALUNIVERSITY',
+      },
+      { name: 'JOLPORI PARK', value: 'JOLPORIPARK' },
+      { name: 'APONGHOR', value: 'APONGHOR' },
+      { name: 'SISHUMELA', value: 'SISHUMELA' },
+      { name: 'Darsana Paribar', value: 'DARSANAPARIBAR' },
+      { name: 'Banglalink MyBl App', value: 'BANGLALINK_MYBL' },
+      { name: 'Mikael', value: 'mikael67' },
+    ],
+    services: [
+      { name: 'ePharmacy', is_enabled: false },
+      { name: 'ePrescription', is_enabled: true },
+      { name: 'upload_prescription', is_enabled: false },
+      { name: 'sms_service', is_enabled: false },
+      { name: 'medicine_reminder', is_enabled: false },
+      { name: 'diagnostic_coverage_districts', is_enabled: false },
+      { name: 'store', is_enabled: false },
+      { name: 'api_hashing', is_enabled: false },
+      {
+        name: 'enabled_promotional_sms_those_no_visit_taken',
+        is_enabled: false,
+      },
+    ],
+    referral_scheme: [],
+    doctime_store_payment_methods: [],
+    app_settings: {
+      sms_service: 'ssl_sms',
+      payment_gateways: ['bkash', 'ssl_commerz'],
+      bl_subscription_visibility: 0,
+      online_pharmacy_max_discount: 7,
+      diagnostic_max_discount: 40,
+      default_home: {
+        date: '2022-09-30',
+        default_home_before_date: 3,
+        default_home_after_date: 3,
+      },
+      available_doctors: { minimum_rating: 4.9, item_count: 10 },
+      video_consultations_images: [
+        'https://doctime-public-assets.s3.ap-south-1.amazonaws.com/app/h-d-01.png',
+        'https://doctime-public-assets.s3.ap-south-1.amazonaws.com/app/h-d-02.png',
+        'https://doctime-public-assets.s3.ap-south-1.amazonaws.com/app/h-d-03.png',
+      ],
+      color_codes: {
+        instant_video_consultation: 'CBDEFE',
+        consult_a_specialist: '629CFC',
+      },
+      ivc_visibility_home: 0,
+      ivc_visibility_more: 0,
+      flash_banner_frequency_threshold: 1,
+      referral_point: 400,
+      prescription_thumbnail:
+        'https://doctime-public-assets.s3.ap-south-1.amazonaws.com/app/prescription_thumb.jpeg',
+      show_on_boarding: true,
+      navigation_ignore_list: [],
+      ecommerce_payment_methods: ['cod'],
+      bmi_referred_redirection: {
+        action_key: 'doctors-by-speciality',
+        action_value: '46',
+      },
+      slider_interval_time_in_seconds: 4000,
+      professional_slider_interval_time_in_ms: 4000,
+    },
+    paymentable_services: [
+      { name: 'consultation', max_wallet_usable_percentage: 50 },
+      { name: 'subscription', max_wallet_usable_percentage: 0 },
+      { name: 'diagnostic', max_wallet_usable_percentage: 0 },
+      { name: 'store', max_wallet_usable_percentage: 0 },
+      { name: 'pharma', max_wallet_usable_percentage: 100 },
+    ],
+  },
+};
+export default data;

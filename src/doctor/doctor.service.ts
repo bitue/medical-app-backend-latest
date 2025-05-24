@@ -309,6 +309,7 @@ export class DoctorService {
       .leftJoinAndSelect('doctor.specialties', 'specialty') // load ALL specialties
       .leftJoinAndSelect('doctor.user', 'user')
       .where('doctor.id IN (:...doctorIds)', { doctorIds })
+      .andWhere('doctor.isApproved = :approved', { approved: true })
       .getMany();
 
     return doctors;
