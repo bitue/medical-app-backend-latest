@@ -9,15 +9,24 @@ import { CurrentUserMiddleware } from 'src/common/middleware/current-user.middle
 import { DoctorModule } from 'src/doctor/doctor.module';
 
 @Module({
-  imports : [TypeOrmModule.forFeature([CurrentMedication]), UsersModule, PatientModule, DoctorModule],
+  imports: [
+    TypeOrmModule.forFeature([CurrentMedication]),
+    UsersModule,
+    PatientModule,
+    DoctorModule,
+  ],
   controllers: [CurrentMedicationController],
-  providers: [CurrentMedicationService]
+  providers: [CurrentMedicationService],
+  exports: [CurrentMedicationService],
 })
 export class CurrentMedicationModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(CurrentUserMiddleware).exclude(
-      { path: 'current-medication', method: RequestMethod.GET },
-      'current-medication/{*splat}',
-    ).forRoutes(CurrentMedicationController);
+    consumer
+      .apply(CurrentUserMiddleware)
+      .exclude(
+        { path: 'current-medication', method: RequestMethod.GET },
+        'current-medication/{*splat}',
+      )
+      .forRoutes(CurrentMedicationController);
   }
 }

@@ -1,9 +1,13 @@
-import { IsNotEmpty, IsDateString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { Appointment } from '@/appointment/appointment.entity';
+import { Patient } from '@/patient/patient.entity';
+import { IsNotEmpty, IsDateString, IsOptional } from 'class-validator';
 
 export class CreateCurrentMedicationDto {
-  @IsNotEmpty()
-  doctorId: number;
+  @IsOptional()
+  patient?: Patient;
+
+  @IsOptional()
+  appointment?: Appointment;
 
   @IsNotEmpty()
   doses: string;
@@ -16,6 +20,7 @@ export class CreateCurrentMedicationDto {
   @IsDateString()
   endDate: Date | null;
 
+  @IsOptional()
   isRunning: boolean;
 }
 

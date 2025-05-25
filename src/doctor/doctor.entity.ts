@@ -48,11 +48,11 @@ export class Doctor {
   specialties: Specialty[];
 
   // One Doctor provides many CurrentMedications
-  @OneToMany(
-    () => CurrentMedication,
-    (currentMedication) => currentMedication.doctor,
-  )
-  providedMedications: CurrentMedication[];
+  // @OneToMany(
+  //   () => CurrentMedication,
+  //   (currentMedication) => currentMedication.doctor,
+  // )
+  // providedMedications: CurrentMedication[];
 
   @OneToMany(() => Prescription, (prescription) => prescription.doctor, {
     cascade: true,
