@@ -2,6 +2,8 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
+  Param,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -22,6 +24,11 @@ export class CurrentMedicationController {
     private readonly doctorService: DoctorService,
   ) {}
 
+  @Get('patient/:patientId/medications')
+  async getMedicationsByPatient(@Param('patientId') patientId: string) {
+    return this.currentMedicationService.getMedicationsByPatientId(+patientId);
+  }
+
   @Post()
   @UseGuards(AuthGuard)
   async create(
@@ -29,33 +36,25 @@ export class CurrentMedicationController {
     @CurrentUser() user: User,
   ) {
     try {
-      const [existingPatient, doctor] = await Promise.all([
+      console.log(0);
+      const [existingPatient] = await Promise.all([
         this.patientService.findByUserId(user?.id),
-        this.doctorService.findOne(currentMedicationData?.doctorId),
       ]);
 
       if (!existingPatient) {
         throw new BadRequestException('Patient  not found!');
       }
 
+      console.log(1);
+
       const currentMedication = await this.currentMedicationService.create({
-        doctor,
         doses: currentMedicationData?.doses,
         startDate: currentMedicationData?.startDate,
         endDate: currentMedicationData?.endDate,
         isRunning: currentMedicationData.isRunning,
         patient: existingPatient,
+        appointment: null,
       });
-
-      // if (!existingPatient) {
-      //   await this.patientService.create({ user: user, currentMedication });
-      //   return {
-      //     code: '201',
-      //     message: 'Current medication data created successfully!',
-      //     data: currentMedication,
-      //     status: true,
-      //   };
-      // }
 
       await this.patientService.update(existingPatient.id, {
         currentMedications: [
@@ -63,6 +62,7 @@ export class CurrentMedicationController {
           currentMedication,
         ],
       });
+
       return {
         code: '201',
         message: 'Current medication data created successfully!',

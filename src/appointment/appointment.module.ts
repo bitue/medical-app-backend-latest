@@ -9,19 +9,31 @@ import { Prescription } from '@/prescription/prescription.entity';
 import { Report } from '@/report/report.entity';
 import { CurrentUserMiddleware } from '@/common/middleware/current-user.middleware';
 import { UsersModule } from '@/users/users.module';
+import { CurrentMedicationModule } from '@/current-medication/current-medication.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Appointment, Doctor, Patient, Report, Prescription]), UsersModule],
+  imports: [
+    TypeOrmModule.forFeature([
+      Appointment,
+      Doctor,
+      Patient,
+      Report,
+      Prescription,
+    ]),
+    UsersModule,
+    CurrentMedicationModule,
+  ],
   controllers: [AppointmentController],
-  providers: [AppointmentService]
+  providers: [AppointmentService],
 })
 export class AppointmentModule {
-
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(CurrentUserMiddleware).exclude(
-      { path: 'appointments', method: RequestMethod.GET },
-      'appointments/{*splat}',
-    ).forRoutes(AppointmentController);
+    consumer
+      .apply(CurrentUserMiddleware)
+      .exclude(
+        { path: 'appointments', method: RequestMethod.GET },
+        'appointments/{*splat}',
+      )
+      .forRoutes(AppointmentController);
   }
-
 }

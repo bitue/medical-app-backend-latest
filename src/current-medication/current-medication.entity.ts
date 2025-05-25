@@ -1,3 +1,4 @@
+import { Appointment } from '@/appointment/appointment.entity';
 import { Doctor } from 'src/doctor/doctor.entity';
 import { Patient } from 'src/patient/patient.entity';
 import { User } from 'src/users/users.entity';
@@ -24,10 +25,20 @@ export class CurrentMedication {
   })
   patient: Patient;
 
-  @ManyToOne(() => Doctor, (doctor) => doctor.providedMedications, {
-    nullable: true,
-  })
-  doctor: Doctor | null;
+  @ManyToOne(
+    () => Appointment,
+    (appointment) => appointment.providedMedications,
+    {
+      nullable: true,
+    },
+  )
+  @JoinColumn()
+  appointment: Appointment;
+
+  // @ManyToOne(() => Doctor, (doctor) => doctor.providedMedications, {
+  //   nullable: true,
+  // })
+  // doctor: Doctor | null;
 
   @Column({ type: 'date', nullable: true })
   startDate: Date | null;
