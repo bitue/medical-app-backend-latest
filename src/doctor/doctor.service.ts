@@ -15,6 +15,7 @@ import { CreateProfileDto } from './dtos/create-profile.dto';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { EducationService } from '@/education/education.service';
 import { ExperienceService } from '@/experience/experience.service';
+import { UsersService } from '@/users/users.service';
 
 @Injectable()
 export class DoctorService {
@@ -30,6 +31,8 @@ export class DoctorService {
     private readonly educationService: EducationService,
 
     private readonly experienceService: ExperienceService,
+
+    private readonly userService: UsersService,
   ) {}
 
   async create(createDoctorDto: Partial<CreateDoctorDto>) {

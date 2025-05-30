@@ -7,6 +7,12 @@ export enum UserRole {
   ADMIN = 'admin',
 }
 
+export enum Gender {
+  MALE = 'male',
+  FEMALE = 'female',
+  OTHER = 'other',
+}
+
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
@@ -20,6 +26,16 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column({ nullable: true })
+  dob: Date;
+
+  @Column({
+    type: 'enum',
+    enum: Gender,
+    nullable: true,
+  })
+  gender: Gender;
 
   @Column({
     type: 'enum',

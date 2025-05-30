@@ -31,6 +31,13 @@ export class DoctorController {
     private readonly userService: UsersService,
   ) {}
 
+  @Get('getDoctorByToken')
+  @UseGuards(AuthGuard)
+  async getDoctorByToken(@CurrentUser() user: User) {
+    console.log(CurrentUser.toString);
+    return this.doctorService.findByUserId(user.id);
+  }
+
   @Get('getAllMedicalCollege')
   async getAllMedicalCollege() {
     return medicalInstitutes;
