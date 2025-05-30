@@ -21,6 +21,9 @@ export class CreateDoctorDto {
   BMDC?: string;
 
   @IsOptional()
+  title?: string;
+
+  @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
   @IsNumber({}, { each: true })
