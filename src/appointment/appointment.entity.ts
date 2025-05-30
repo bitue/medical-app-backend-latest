@@ -40,6 +40,9 @@ export class Appointment {
   @JoinTable()
   prescriptions: Prescription[];
 
+  @Column({ nullable: true })
+  appointmentSlot: String;
+
   @Column()
   accessTime: number;
 
