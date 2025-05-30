@@ -80,6 +80,9 @@ export class Doctor {
 
   @Column({ type: 'varchar', length: 255, nullable: true }) // string with max length 255
   BMDC: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true }) // string with max length 255
+  title: string;
 }
 
 // @Entity()

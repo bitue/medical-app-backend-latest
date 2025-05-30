@@ -17,6 +17,7 @@ import { EducationService } from '@/education/education.service';
 import { ExperienceService } from '@/experience/experience.service';
 import { EducationModule } from '@/education/education.module';
 import { ExperienceModule } from '@/experience/experience.module';
+import { UsersService } from '@/users/users.service';
 
 @Module({
   imports: [
