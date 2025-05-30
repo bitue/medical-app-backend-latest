@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsArray } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsArray, IsString } from 'class-validator';
 
 export class CreateAppointmentDto {
   @ApiProperty({ example: 1, description: 'ID of the doctor' })
@@ -12,11 +12,19 @@ export class CreateAppointmentDto {
   @IsNotEmpty()
   patientId: number;
 
-  @ApiProperty({ example: [3, 4], description: 'Array of report IDs', type: [Number] })
+  @ApiProperty({
+    example: [3, 4],
+    description: 'Array of report IDs',
+    type: [Number],
+  })
   @IsArray()
   reports: number[];
 
-  @ApiProperty({ example: [5, 6], description: 'Array of prescription IDs', type: [Number] })
+  @ApiProperty({
+    example: [5, 6],
+    description: 'Array of prescription IDs',
+    type: [Number],
+  })
   @IsArray()
   prescriptions: number[];
 
@@ -24,4 +32,8 @@ export class CreateAppointmentDto {
   @IsNumber()
   @IsNotEmpty()
   accessTime: number;
+
+  @IsString()
+  @IsNotEmpty()
+  appointmentSlot: String;
 }

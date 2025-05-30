@@ -53,5 +53,5 @@ export class CreateUserDto {
   role: UserRole;
 
   @IsEnum(Gender)
-  gender: UserRole;
+  gender: Gender;
 }
