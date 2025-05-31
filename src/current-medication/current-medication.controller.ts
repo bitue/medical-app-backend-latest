@@ -15,6 +15,8 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { User } from 'src/users/users.entity';
 import { DoctorService } from 'src/doctor/doctor.service';
 import { AuthGuard } from '@/common/guards/auth.guard';
+import { RoleGuard } from '@/common/guards/role.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
 
 @Controller('current-medication')
 export class CurrentMedicationController {
@@ -25,6 +27,8 @@ export class CurrentMedicationController {
   ) {}
 
   @Get('patient/:patientId/medications')
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('patient')
   async getMedicationsByPatient(@Param('patientId') patientId: string) {
     return this.currentMedicationService.getMedicationsByPatientId(+patientId);
   }

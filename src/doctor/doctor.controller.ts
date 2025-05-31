@@ -143,7 +143,7 @@ export class DoctorController {
     return this.doctorService.getAllDoctorsWithStatus();
   }
   @Patch(':doctorId/approve')
-  @UseGuards(AuthGuard, RoleGuard)
+  @UseGuards(AuthGuard, RoleGuard) // update it to ADMIN role Later
   @Roles('doctor')
   @ApiOperation({ summary: 'Approve or disapprove a doctor' })
   @ApiParam({ name: 'doctorId', example: 1, description: 'ID of the doctor' })

@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { SpecialtiesService } from './specialties.service';
 import { CreateSpecialtyDto } from './dto/create-specialty.dto';
 import { UpdateSpecialtyDto } from './dto/update-specialty.dto';
+import { AuthGuard } from '@/common/guards/auth.guard';
 
 @Controller('specialties')
 export class SpecialtiesController {
@@ -21,6 +23,7 @@ export class SpecialtiesController {
   }
 
   @Post('addAll-specialities')
+  @UseGuards(AuthGuard)
   createAll(@Body() CreateSpecialtyDtos: CreateSpecialtyDto[]) {
     return this.specialtiesService.createAll(CreateSpecialtyDtos);
   }
