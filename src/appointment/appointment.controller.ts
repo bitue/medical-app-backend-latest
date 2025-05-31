@@ -83,7 +83,7 @@ export class AppointmentController {
     };
   }
 
-  @Get('searchAppointment/patient')
+  @Get('patient/:patientId')
   @UseGuards(AuthGuard, RoleGuard)
   @Roles('patient')
   async getByPatient(
@@ -102,18 +102,6 @@ export class AppointmentController {
   }
 
   @Patch(':appointmentId/approve')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Approve or disapprove an appointment' })
-  @ApiParam({
-    name: 'appointmentId',
-    example: 1,
-    description: 'ID of the appointment',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Appointment approval status updated',
-    type: Appointment,
-  })
   async updateApproval(
     @Param('appointmentId') appointmentId: number,
     @CurrentUser() user: User,
