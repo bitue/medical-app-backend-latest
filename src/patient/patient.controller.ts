@@ -30,7 +30,7 @@ export class PatientController {
     return this.patentService.findByUserId(id);
   }
 
-  @Post('get-patient-email')
+  @Post('getPatientByEmail')
   @UseGuards(AuthGuard)
   async getPatientByEmail(@Body('email') email: string) {
     if (!email) {

@@ -104,6 +104,7 @@ export class ChatGateway
       onlineDoctorsCount: doctors.length,
       onlinePatientsCount: patients.length,
       availableDoctors: doctors.map((d) => ({ doctorId: d.userId })),
+      avaiablePatients: patients.map((p) => ({ patientId: p.userId })),
     });
   }
 
@@ -128,13 +129,47 @@ export class ChatGateway
     }
 
     // Forward the message to the doctor
+
+    //
     this.server.to(doctorSocketId).emit('patientMessage', {
       patientId: senderInfo.userId,
       message: data.message,
     });
 
+    // building logic to save to database here
+
     // Optionally, confirm to patient that message was sent
-    socket.emit('messageSent', { doctorId: data.doctorId });
+    socket.emit('messageSent', { doctorId: data.doctorId }); // isMessageSent or not
+  }
+
+  /** Doctors can send message reply to a patient */
+  @SubscribeMessage('messageToPatient')
+  handleMessageToPatient(
+    @MessageBody() data: { patientId: number; message: string },
+    @ConnectedSocket() socket: Socket,
+  ) {
+    const senderInfo = this.activeUsers.get(socket.id);
+    if (!senderInfo || senderInfo.role !== 'doctor') {
+      socket.emit('error', {
+        message: 'Only doctors can send messages to patients.',
+      });
+      return;
+    }
+
+    const patientSocketId = this.userSocketMap.get(data.patientId);
+    if (!patientSocketId) {
+      socket.emit('error', { message: 'Patient is not online.' });
+      return;
+    }
+
+    // Forward the message to the patient
+    this.server.to(patientSocketId).emit('doctorMessage', {
+      doctorId: senderInfo.userId,
+      message: data.message,
+    });
+
+    // Optionally, confirm to doctor that message was sent
+    socket.emit('messageSent', { patientId: data.patientId });
   }
 
   /** Doctor can toggle availability */

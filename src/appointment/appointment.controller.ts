@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Get, Param, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -13,6 +21,9 @@ import { UpdateApprovalDto } from './dtos/appointment.dto';
 import { User } from '@/users/users.entity';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { AddMedicationDto } from './dtos/addMedication.dto';
+import { AuthGuard } from '@/common/guards/auth.guard';
+import { RoleGuard } from '@/common/guards/role.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
 
 @ApiTags('Appointments')
 @Controller('appointments')
@@ -20,19 +31,15 @@ export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
   @Post('doctor/addMedicationByDoctor')
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('doctor')
   async addMedication(@Body() dto: AddMedicationDto) {
     return this.appointmentService.addMedicationByDoctor(dto);
   }
 
   @Post()
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Create an appointment' })
-  @ApiResponse({
-    status: 201,
-    description: 'Appointment successfully created',
-    type: Appointment,
-  })
-  @ApiResponse({ status: 404, description: 'Doctor or Patient not found' })
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('patient')
   async create(@Body() dto: CreateAppointmentDto) {
     const data = await this.appointmentService.createAppointment(dto);
     console.log(data);
@@ -45,12 +52,7 @@ export class AppointmentController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all appointments' })
-  @ApiResponse({
-    status: 200,
-    description: 'List of all appointments',
-    type: [Appointment],
-  })
+  @UseGuards(AuthGuard)
   async getAllAppointments(): Promise<{
     code: number;
     message: string;
@@ -68,18 +70,7 @@ export class AppointmentController {
   }
 
   @Get(':appointmentId')
-  @ApiOperation({ summary: 'Get an appointment by ID' })
-  @ApiParam({
-    name: 'appointmentId',
-    example: 1,
-    description: 'ID of the appointment',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Appointment details',
-    type: Appointment,
-  })
-  @ApiResponse({ status: 404, description: 'Appointment not found' })
+  @UseGuards(AuthGuard)
   async getAppointmentById(@Param('appointmentId') appointmentId: number) {
     const data =
       await this.appointmentService.getAppointmentById(appointmentId);
@@ -92,14 +83,9 @@ export class AppointmentController {
     };
   }
 
-  @Get('patient/:patientId')
-  @ApiOperation({ summary: 'Get all appointments for a specific patient' })
-  @ApiParam({ name: 'patientId', example: 2, description: 'ID of the patient' })
-  @ApiResponse({
-    status: 200,
-    description: 'List of appointments',
-    type: [Appointment],
-  })
+  @Get('searchAppointment/patient')
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('patient')
   async getByPatient(
     @Param('patientId') patientId: number,
   ): Promise<Appointment[]> {
@@ -107,14 +93,9 @@ export class AppointmentController {
   }
 
   @Get('doctor/:doctorId')
-  @ApiOperation({ summary: 'Get all appointments for a specific doctor' })
-  @ApiParam({ name: 'doctorId', example: 1, description: 'ID of the doctor' })
-  @ApiResponse({
-    status: 200,
-    description: 'List of appointments',
-    type: [Appointment],
-  })
-  async getByDoctor(
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('doctor')
+  async getAppointmentByDoctor(
     @Param('doctorId') doctorId: number,
   ): Promise<Appointment[]> {
     return this.appointmentService.getAppointmentsByDoctor(doctorId);

@@ -88,7 +88,14 @@ export class AppointmentService {
   }
 
   async createAppointment(dto: CreateAppointmentDto): Promise<Appointment> {
-    const { doctorId, patientId, reports, prescriptions, accessTime } = dto;
+    const {
+      doctorId,
+      patientId,
+      reports,
+      prescriptions,
+      accessTime,
+      appointmentSlot,
+    } = dto;
 
     const doctor = await this.doctorRepository.findOne({
       where: { id: doctorId },
@@ -118,6 +125,7 @@ export class AppointmentService {
       reports: reportEntities,
       prescriptions: prescriptionEntities,
       accessTime,
+      appointmentSlot,
     });
 
     return await this.appointmentRepository.save(appointment);

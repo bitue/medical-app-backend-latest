@@ -69,8 +69,13 @@ export class DoctorService {
       if (createDoctorDto.BMDC) {
         doctor.BMDC = createDoctorDto.BMDC;
       }
+
       if (createDoctorDto.introduction) {
         doctor.introduction = createDoctorDto.introduction;
+      }
+
+      if (createDoctorDto.title) {
+        doctor.title = createDoctorDto.title;
       }
 
       if (createDoctorDto.specialtyIds?.length) {
