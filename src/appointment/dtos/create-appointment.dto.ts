@@ -36,4 +36,8 @@ export class CreateAppointmentDto {
   @IsString()
   @IsNotEmpty()
   appointmentSlot: String;
+
+  @IsString()
+  @IsNotEmpty()
+  appointmentDate: String;
 }

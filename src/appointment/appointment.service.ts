@@ -87,48 +87,107 @@ export class AppointmentService {
     }
   }
 
+  // async createAppointment(dto: CreateAppointmentDto): Promise<Appointment> {
+  //   const {
+  //     doctorId,
+  //     patientId,
+  //     reports,
+  //     prescriptions,
+  //     accessTime,
+  //     appointmentSlot,
+  //     appointmentDate,
+  //   } = dto;
+
+  //   console.log(dto, '------------------------------');
+
+  //   const doctor = await this.doctorRepository.findOne({
+  //     where: { id: doctorId },
+  //   });
+  //   if (!doctor) throw new NotFoundException('Doctor not found');
+
+  //   const patient = await this.patientRepository.findOne({
+  //     where: { id: patientId },
+  //   });
+  //   if (!patient) throw new NotFoundException('Patient not found');
+
+  //   const reportEntities = reports.length
+  //     ? await this.reportRepository.find({
+  //         where: reports.map((id) => ({ id })),
+  //       })
+  //     : [];
+
+  //   const prescriptionEntities = prescriptions.length
+  //     ? await this.prescriptionRepository.find({
+  //         where: prescriptions.map((id) => ({ id })),
+  //       })
+  //     : [];
+
+  //   const appointment = this.appointmentRepository.create({
+  //     doctor,
+  //     patient,
+  //     reports: reportEntities,
+  //     prescriptions: prescriptionEntities,
+  //     accessTime,
+  //     appointmentSlot,
+  //     appointmentDate,
+  //   });
+
+  //   return await this.appointmentRepository.save(appointment);
+  // }
+
   async createAppointment(dto: CreateAppointmentDto): Promise<Appointment> {
-    const {
-      doctorId,
-      patientId,
-      reports,
-      prescriptions,
-      accessTime,
-      appointmentSlot,
-    } = dto;
+    try {
+      const {
+        doctorId,
+        patientId,
+        reports,
+        prescriptions,
+        accessTime,
+        appointmentSlot,
+        appointmentDate,
+      } = dto;
 
-    const doctor = await this.doctorRepository.findOne({
-      where: { id: doctorId },
-    });
-    if (!doctor) throw new NotFoundException('Doctor not found');
+      //   console.log(dto, '------------------------------');
 
-    const patient = await this.patientRepository.findOne({
-      where: { id: patientId },
-    });
-    if (!patient) throw new NotFoundException('Patient not found');
+      const doctor = await this.doctorRepository.findOne({
+        where: { id: doctorId },
+      });
+      if (!doctor) throw new NotFoundException('Doctor not found');
 
-    const reportEntities = reports.length
-      ? await this.reportRepository.find({
-          where: reports.map((id) => ({ id })),
-        })
-      : [];
+      const patient = await this.patientRepository.findOne({
+        where: { id: patientId },
+      });
+      if (!patient) throw new NotFoundException('Patient not found');
 
-    const prescriptionEntities = prescriptions.length
-      ? await this.prescriptionRepository.find({
-          where: prescriptions.map((id) => ({ id })),
-        })
-      : [];
+      const reportEntities = reports?.length
+        ? await this.reportRepository.find({
+            where: reports.map((id) => ({ id })),
+          })
+        : [];
 
-    const appointment = this.appointmentRepository.create({
-      doctor,
-      patient,
-      reports: reportEntities,
-      prescriptions: prescriptionEntities,
-      accessTime,
-      appointmentSlot,
-    });
+      const prescriptionEntities = prescriptions?.length
+        ? await this.prescriptionRepository.find({
+            where: prescriptions.map((id) => ({ id })),
+          })
+        : [];
 
-    return await this.appointmentRepository.save(appointment);
+      const appointment = this.appointmentRepository.create({
+        doctor,
+        patient,
+        reports: reportEntities,
+        prescriptions: prescriptionEntities,
+        accessTime,
+        appointmentSlot,
+        appointmentDate,
+      });
+
+      return await this.appointmentRepository.save(appointment);
+    } catch (error) {
+      console.error('Failed to create appointment:', error);
+      throw error instanceof Error
+        ? error
+        : new Error('Appointment creation failed');
+    }
   }
 
   async getAllAppointments(): Promise<Appointment[]> {
