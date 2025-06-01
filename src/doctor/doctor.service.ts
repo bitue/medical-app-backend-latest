@@ -242,7 +242,7 @@ export class DoctorService {
     try {
       return await this.doctorRepository.findOne({
         where: { id },
-        relations: ['experiences', 'educations'], // use property names from entity, not entity class names
+        relations: ['experiences', 'educations', 'user'], // use property names from entity, not entity class names
       });
     } catch (error) {
       // Handle error as needed, e.g., log and return null or rethrow
