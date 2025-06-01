@@ -23,118 +23,6 @@ export class HealthStatusController {
     private readonly patientService: PatientService,
   ) {}
 
-  // @Post()
-  // @UseGuards(AuthGuard, RoleGuard)
-  // @Roles('patient')
-  // async create(
-  //   @Body() healthStatusData: HealthStatusCreateDto,
-  //   @CurrentUser() user: User,
-  // ) {
-  //   try {
-  //     const existingPatient = await this.patientService.findByUserId(user?.id);
-  //     const healthStatus =
-  //       await this.HealthStatusService.create(healthStatusData);
-
-  //     //  if(!existingPatient){
-  //     //    await this.patientService.create({user : user, healthStatus})
-  //     //     return {
-  //     //      code : '201',
-  //     //      message : "Health status data created successfully!",
-  //     //      data : healthStatus,
-  //     //      status : true,
-  //     //     }
-  //     //  }
-  //     if (!existingPatient) {
-  //       throw new BadRequestException(
-  //         'Patient  profile not found. Please create Patiend  profile first.',
-  //       );
-  //     }
-  //     await this.patientService.update(existingPatient.id, {
-  //       healthStatuses: [...existingPatient.healthStatuses, healthStatus],
-  //     });
-  //     return {
-  //       code: '201',
-  //       message: 'Health status data created successfully!',
-  //       data: healthStatus,
-  //       status: true,
-  //     };
-  //   } catch (err) {
-  //     console.log(err.message);
-  //   }
-  // }
-
-  // @Post()
-  // @UseGuards(AuthGuard, RoleGuard)
-  // @Roles('patient')
-  // async createOrUpdateHealthStatus(
-  //   @Body() healthStatusData: HealthStatusCreateDto,
-  //   @CurrentUser() user: User,
-  // ) {
-  //   try {
-  //     const existingPatient = await this.patientService.findByUserId(user?.id);
-  //     if (!existingPatient) {
-  //       throw new BadRequestException(
-  //         'Patient profile not found. Please create patient profile first.',
-  //       );
-  //     }
-
-  //     // Check if patient already has a health status record (assuming one per patient)
-  //     let healthStatus = existingPatient.healthStatuses?.[0];
-
-  //     if (healthStatus) {
-  //       // Update existing health status
-  //       healthStatus = await this.HealthStatusService.update(
-  //         healthStatus.id,
-  //         healthStatusData,
-  //       );
-  //     } else {
-  //       // Create new health status and associate it with patient
-  //       healthStatus = await this.HealthStatusService.create(healthStatusData);
-  //       await this.patientService.update(existingPatient.id, {
-  //         healthStatuses: [healthStatus],
-  //       });
-  //     }
-
-  //     return {
-  //       code: 201,
-  //       message: 'Health status data saved successfully!',
-  //       data: healthStatus,
-  //       status: true,
-  //     };
-  //   } catch (err) {
-  //     console.error(err.message);
-  //     throw new InternalServerErrorException(
-  //       'Failed to save health status data.',
-  //     );
-  //   }
-  // }
-
-  // @Post()
-  // @UseGuards(AuthGuard, RoleGuard)
-  // @Roles('patient')
-  // async createOrUpdateHealthStatus(
-  //   @Body() healthStatusData: HealthStatusCreateDto,
-  //   @CurrentUser() user: User,
-  // ) {
-  //   const patient = await this.patientService.findByUserId(user.id);
-  //   if (!patient) {
-  //     throw new BadRequestException('Patient profile not found.');
-  //   }
-
-  //   const healthStatus =
-  //     await this.healthStatusService.createOrUpdateHealthStatus(
-  //       patient.id,
-  //       healthStatusData,
-  //     );
-
-  //   return {
-  //     code: 201,
-  //     message: 'Health status saved successfully',
-  //     data: healthStatus,
-  //     status: true,
-  //   };
-  // }
-
   @Post()
   @UseGuards(AuthGuard, RoleGuard)
   @Roles('patient')
@@ -164,10 +52,7 @@ export class HealthStatusController {
       };
     } catch (error) {
       console.log(error.message);
-      // You can log the error here if needed
-      // console.error(error);
 
-      // Re-throw known NestJS HTTP exceptions
       if (error instanceof BadRequestException) {
         throw error;
       }

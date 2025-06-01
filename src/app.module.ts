@@ -24,6 +24,7 @@ import { AppointmentModule } from './appointment/appointment.module';
 import { AdminModule } from './admin/admin.module';
 import { HealthStatusModule } from './health-status/health-status.module';
 import { SpecialtiesModule } from './specialties/specialties.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -50,11 +51,12 @@ import { SpecialtiesModule } from './specialties/specialties.module';
     OperationHistoryModule,
     HealthStatusModule,
     CallModule,
-
+    ChatModule,
     S3Module,
     AppointmentModule,
     AdminModule,
     SpecialtiesModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [

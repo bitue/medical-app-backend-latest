@@ -1,3 +1,4 @@
+import { ChatService } from '@/chat/chat.service';
 import {
   SubscribeMessage,
   WebSocketGateway,
@@ -24,6 +25,8 @@ interface UserInfo {
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+  constructor(private readonly chatService: ChatService) {}
+
   @WebSocketServer()
   server: Server;
 
@@ -51,6 +54,22 @@ export class ChatGateway
         `Connection rejected: missing role or userId - socketId: ${socket.id}`,
       );
       socket.disconnect(true); // disconnect invalid clients
+      return;
+    }
+
+    // if same userId connection  then disconnect it now
+
+    if (this.userSocketMap.has(userId)) {
+      const existingSocketId = this.userSocketMap.get(userId);
+      console.log(
+        `Duplicate connection attempt: userId ${userId} already connected as socket ${existingSocketId}`,
+      );
+
+      socket.emit('error', {
+        message: '⚠️ You are already connected from another device.',
+      });
+
+      socket.disconnect(true);
       return;
     }
 
@@ -110,7 +129,7 @@ export class ChatGateway
 
   /** Patients can send message to a doctor */
   @SubscribeMessage('messageToDoctor')
-  handleMessageToDoctor(
+  async handleMessageToDoctor(
     @MessageBody() data: { doctorId: number; message: string },
     @ConnectedSocket() socket: Socket,
   ) {
@@ -138,13 +157,19 @@ export class ChatGateway
 
     // building logic to save to database here
 
+    await this.chatService.saveMessage(
+      senderInfo.userId,
+      data.doctorId,
+      data.message,
+    );
+
     // Optionally, confirm to patient that message was sent
     socket.emit('messageSent', { doctorId: data.doctorId }); // isMessageSent or not
   }
 
   /** Doctors can send message reply to a patient */
   @SubscribeMessage('messageToPatient')
-  handleMessageToPatient(
+  async handleMessageToPatient(
     @MessageBody() data: { patientId: number; message: string },
     @ConnectedSocket() socket: Socket,
   ) {
@@ -167,6 +192,12 @@ export class ChatGateway
       doctorId: senderInfo.userId,
       message: data.message,
     });
+
+    await this.chatService.saveMessage(
+      senderInfo.userId,
+      data.patientId,
+      data.message,
+    );
 
     // Optionally, confirm to doctor that message was sent
     socket.emit('messageSent', { patientId: data.patientId });
