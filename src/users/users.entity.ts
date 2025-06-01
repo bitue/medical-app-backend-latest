@@ -30,6 +30,9 @@ export class User {
   @Column({ nullable: true })
   dob: Date;
 
+  @Column({ nullable: true })
+  profileImage: String;
+
   @Column({
     type: 'enum',
     enum: Gender,
