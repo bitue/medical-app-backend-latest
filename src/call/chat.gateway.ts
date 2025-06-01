@@ -211,6 +211,7 @@ export class ChatGateway
       onlineDoctorsCount: doctors.length,
       onlinePatientsCount: patients.length,
       availableDoctors: doctors.map((d) => ({ doctorId: d.userId })),
+      availablePatients: patients.map((d) => ({ patientId: d.userId })),
     });
   }
 }
