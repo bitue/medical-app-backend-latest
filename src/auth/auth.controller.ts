@@ -4,6 +4,7 @@ import {
   Controller,
   InternalServerErrorException,
   Post,
+  UploadedFile,
 } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { CreateUserDto } from 'src/users/dtos/create-users.dto';
@@ -17,6 +18,7 @@ import * as bcrypt from 'bcryptjs';
 import { MessageService } from 'src/message/message.service';
 import { DoctorService } from '@/doctor/doctor.service';
 import { PatientService } from '@/patient/patient.service';
+import { S3Service } from '@/s3/s3.service';
 
 @Controller('auth')
 export class AuthController {
@@ -26,10 +28,14 @@ export class AuthController {
     private messageService: MessageService,
     private readonly doctorService: DoctorService,
     private readonly patientService: PatientService,
+    private readonly s3Service: S3Service,
   ) {}
 
   @Post('signup')
-  async signup(@Body() createUserDto: CreateUserDto): Promise<AuthDto> {
+  async signup(
+    @Body() createUserDto: CreateUserDto,
+    @UploadedFile() file: any,
+  ): Promise<AuthDto> {
     const existingUser = await this.usersService.findOne(createUserDto.email);
 
     if (existingUser) {
@@ -46,6 +52,10 @@ export class AuthController {
     if (!data || !data.isVerified) {
       throw new BadRequestException('Please verify your email!');
     }
+
+    // for the image upload profile image
+    const profileImage = await this.s3Service.uploadFile(file);
+    createUserDto.profileImage = profileImage;
 
     const user = await this.usersService.create(createUserDto);
     const token = await this.jwtService.signAsync(
