@@ -10,6 +10,7 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { AgoraService } from './agoraToken';
 
 interface UserInfo {
   userId: number;
@@ -25,7 +26,10 @@ interface UserInfo {
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(private readonly chatService: ChatService) {}
+  constructor(
+    private readonly chatService: ChatService,
+    private readonly agoraService: AgoraService,
+  ) {}
 
   @WebSocketServer()
   server: Server;
@@ -243,6 +247,93 @@ export class ChatGateway
       onlinePatientsCount: patients.length,
       availableDoctors: doctors.map((d) => ({ doctorId: d.userId })),
       availablePatients: patients.map((d) => ({ patientId: d.userId })),
+    });
+  }
+
+  // ========================AGORA EVENTS ====================================
+
+  @SubscribeMessage('getAgoraToken')
+  async handleGetAgoraToken(
+    @MessageBody()
+    data: {
+      channelName: string;
+      uid: number;
+      role?: 'publisher' | 'subscriber';
+    },
+    @ConnectedSocket() socket: Socket,
+  ) {
+    try {
+      if (!data.channelName || !data.uid) {
+        socket.emit('error', { message: 'channelName and uid are required' });
+        return;
+      }
+      // Default role to publisher if not specified
+      const role = data.role || 'publisher';
+      const token = this.agoraService.generateRtcToken(
+        data.channelName,
+        data.uid,
+        role,
+      );
+      socket.emit('agoraToken', {
+        token,
+        channelName: data.channelName,
+        uid: data.uid,
+      });
+    } catch (err) {
+      socket.emit('error', {
+        message: 'Failed to generate Agora token',
+        details: err.message,
+      });
+    }
+  }
+
+  // call singnal
+
+  @SubscribeMessage('callUser')
+  handleCallUser(
+    @MessageBody() data: { toUserId: number; channelName: string; uid: number },
+    @ConnectedSocket() socket: Socket,
+  ) {
+    const callerInfo = this.activeUsers.get(socket.id);
+    if (!callerInfo) {
+      socket.emit('error', { message: 'Caller info not found' });
+      return;
+    }
+
+    const receiverSocketId = this.userSocketMap.get(data.toUserId);
+    if (!receiverSocketId) {
+      socket.emit('error', { message: 'User is not online' });
+      return;
+    }
+
+    // Notify the callee about incoming call with channel info  // SERVER SENT EVENTS
+    this.server.to(receiverSocketId).emit('incomingCall', {
+      fromUserId: callerInfo.userId,
+      channelName: data.channelName,
+      uid: data.uid,
+    });
+  }
+
+  @SubscribeMessage('answerCall') //// SERVER SENT EVENTS
+  handleAnswerCall(
+    @MessageBody() data: { toUserId: number; accepted: boolean },
+    @ConnectedSocket() socket: Socket,
+  ) {
+    const answererInfo = this.activeUsers.get(socket.id);
+    if (!answererInfo) {
+      socket.emit('error', { message: 'User info not found' });
+      return;
+    }
+
+    const callerSocketId = this.userSocketMap.get(data.toUserId);
+    if (!callerSocketId) {
+      socket.emit('error', { message: 'Caller is not online' });
+      return;
+    }
+
+    this.server.to(callerSocketId).emit('callAnswered', {
+      fromUserId: answererInfo.userId,
+      accepted: data.accepted,
     });
   }
 }
