@@ -10,16 +10,18 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PatientService } from './patient.service';
-import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Patient } from './patient.entity';
 import { AuthGuard } from '@/common/guards/auth.guard';
+import { RoleGuard } from '@/common/guards/role.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
 
 @Controller('patient')
 export class PatientController {
   constructor(private readonly patentService: PatientService) {}
 
   @Get()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('admin')
   async getAllPatients(): Promise<Patient[]> {
     return this.patentService.findAll();
   }

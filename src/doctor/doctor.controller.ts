@@ -144,7 +144,7 @@ export class DoctorController {
   }
   @Patch(':doctorId/approve')
   @UseGuards(AuthGuard, RoleGuard) // update it to ADMIN role Later
-  @Roles('doctor')
+  @Roles('admin')
   @ApiOperation({ summary: 'Approve or disapprove a doctor' })
   @ApiParam({ name: 'doctorId', example: 1, description: 'ID of the doctor' })
   @ApiResponse({
@@ -176,7 +176,7 @@ export class DoctorController {
 
   @Patch(':doctorId/disapproved')
   @UseGuards(AuthGuard, RoleGuard)
-  @Roles('doctor')
+  @Roles('admin')
   async updateDisapproval(@Param('doctorId') doctorId: number) {
     const doctor = await this.doctorService.findOne(doctorId);
 
