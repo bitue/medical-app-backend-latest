@@ -83,6 +83,7 @@ export class AppointmentController {
     };
   }
 
+  // ================================================================  NEED 2 API TO FORM ! API
   @Get('patient/:patientId')
   @UseGuards(AuthGuard, RoleGuard)
   @Roles('patient')
@@ -100,8 +101,10 @@ export class AppointmentController {
   ): Promise<Appointment[]> {
     return this.appointmentService.getAppointmentsByDoctor(doctorId);
   }
-
+  //=================================================================================
   @Patch(':appointmentId/approve')
+  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('admin')
   async updateApproval(
     @Param('appointmentId') appointmentId: number,
     @CurrentUser() user: User,
