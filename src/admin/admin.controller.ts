@@ -21,41 +21,6 @@ export class AdminController {
   ) {}
 
   @Post('signup')
-  @ApiResponse({
-    status: 201,
-    description: 'Admin successfully signed up.',
-    type: AuthDto,
-    example: {
-      code: 201,
-      message: 'Admin successfully signed up!',
-      data: {
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-        email: 'john@example.com',
-        name: 'john_doe',
-      },
-    },
-  })
-  @ApiResponse({
-    status: 400,
-    description:
-      'Bad Request. User already exists or password confirmation does not match.',
-    type: AuthDto,
-    example: {
-      code: 400,
-      message: 'Admin already exists!',
-      data: null,
-    },
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal Server Error. An unexpected error occurred.',
-    type: AuthDto,
-    example: {
-      code: 500,
-      message: 'Internal Server Error!',
-      data: null,
-    },
-  })
   async signup(@Body() createAdminDto: CreateAdminDto) {
     const existingAdmin = await this.adminService.findOne(createAdminDto.email);
 
@@ -78,40 +43,6 @@ export class AdminController {
   }
 
   @Post('signin')
-  @ApiResponse({
-    status: 200,
-    description: 'Admin successfully login.',
-    type: AuthDto,
-    example: {
-      code: 200,
-      message: 'Admin successfully signed in!',
-      data: {
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-        email: 'john@example.com',
-        name: 'john_doe',
-      },
-    },
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Bad Request.',
-    type: AuthDto,
-    example: {
-      code: 400,
-      message: 'Invalid credientials!',
-      data: null,
-    },
-  })
-  @ApiResponse({
-    status: 500,
-    description: 'Internal Server Error. An unexpected error occurred.',
-    type: AuthDto,
-    example: {
-      code: 500,
-      message: 'Internal Server Error!',
-      data: null,
-    },
-  })
   async login(@Body() loginDto: LoginDto) {
     const admin = await this.adminService.findOne(loginDto.email);
     if (!admin) {
