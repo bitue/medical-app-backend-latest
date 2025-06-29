@@ -20,8 +20,7 @@ export class PatientController {
   constructor(private readonly patentService: PatientService) {}
 
   @Get()
-  @UseGuards(AuthGuard, RoleGuard)
-  @Roles('admin')
+  @UseGuards(AuthGuard)
   async getAllPatients(): Promise<Patient[]> {
     return this.patentService.findAll();
   }
