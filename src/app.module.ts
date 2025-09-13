@@ -25,6 +25,8 @@ import { AdminModule } from './admin/admin.module';
 import { HealthStatusModule } from './health-status/health-status.module';
 import { SpecialtiesModule } from './specialties/specialties.module';
 import { ChatModule } from './chat/chat.module';
+import { StripeService } from './stripe/stripe.service';
+import { StripeController } from './stripe/stripe.controller';
 
 @Module({
   imports: [
@@ -58,7 +60,7 @@ import { ChatModule } from './chat/chat.module';
     SpecialtiesModule,
     ChatModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, StripeController],
   providers: [
     AppService,
     {
@@ -67,6 +69,7 @@ import { ChatModule } from './chat/chat.module';
         whitelist: true,
       }),
     },
+    StripeService,
   ],
 })
 export class AppModule {}
