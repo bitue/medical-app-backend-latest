@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: medicalapp
+    ports:
+      - '5432:5432'
+    volumes:
+      - /home/postgres/postgres_data:/var/lib/postgresql/data # Make sure this directory exists
+    networks:
+      - app-network
+    restart: unless-stopped # Ensures container restarts if it crashes or the server reboots
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: medicalapp
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: medicalapp
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+    ports:
+      - '3000:3000'
+    command: ['npm', 'run', 'start:dev']
+    restart: unless-stopped # Ensures container restarts if it crashes or the server reboots
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
