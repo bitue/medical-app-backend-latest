@@ -9,7 +9,9 @@ export class EducationService {
   constructor(
     @InjectRepository(Education)
     private readonly educationRepository: Repository<Education>,
-  ) {}
+  ) {
+    this.educationRepository = educationRepository;
+  }
 
   async create(educationData: CreateEducationDto): Promise<Education> {
     const education = this.educationRepository.create(educationData);
