@@ -71,4 +71,10 @@ export class Appointment {
     },
   )
   providedMedications: CurrentMedication[];
+
+  @Column({ type: 'boolean', default: false })
+  paymentStatus: boolean; // This field tracks the payment status
+
+  @Column({ nullable: true })
+  paymentIntentId: string; // This field stores the Stripe payment intent ID
 }

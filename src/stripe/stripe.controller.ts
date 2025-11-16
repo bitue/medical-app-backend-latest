@@ -7,10 +7,14 @@ export class StripeController {
   constructor(private stripeService: StripeService) {}
 
   @Post('payment-intent')
-  async createPaymentIntent(@Body() body: { amount: number }) {
-    const { amount } = body;
-    const { clientSecret } =
-      await this.stripeService.createPaymentIntent(amount);
+  async createPaymentIntent(
+    @Body() body: { appointmentId: number; doctorId: number },
+  ) {
+    const { appointmentId, doctorId } = body;
+    const { clientSecret } = await this.stripeService.createPaymentIntent(
+      doctorId,
+      appointmentId,
+    );
     return { clientSecret };
   }
 }

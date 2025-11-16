@@ -18,15 +18,17 @@ import { ExperienceService } from '@/experience/experience.service';
 import { EducationModule } from '@/education/education.module';
 import { ExperienceModule } from '@/experience/experience.module';
 import { UsersService } from '@/users/users.service';
+import { DoctorInformation } from './doctorInformation.entity';
+import { StripeService } from '@/stripe/stripe.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Doctor, Specialty]),
+    TypeOrmModule.forFeature([Doctor, Specialty, DoctorInformation]),
     UsersModule,
     forwardRef(() => EducationModule),
     ExperienceModule,
   ],
-  providers: [DoctorService, CallGateway, SpecialtiesService],
+  providers: [DoctorService, CallGateway, SpecialtiesService, StripeService],
   controllers: [DoctorController],
   exports: [DoctorService],
 })
