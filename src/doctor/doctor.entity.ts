@@ -29,14 +29,6 @@ export class Doctor {
   @JoinColumn()
   user: User;
 
-  // @ManyToMany(() => Education)
-  // @JoinTable()
-  // educations: Education[];
-
-  // @ManyToMany(() => Experience)
-  // @JoinTable()
-  // experiences: Experience[];
-
   @OneToMany(() => Education, (education) => education.doctor)
   educations: Education[];
 
@@ -46,13 +38,6 @@ export class Doctor {
   @ManyToMany(() => Specialty)
   @JoinTable()
   specialties: Specialty[];
-
-  // One Doctor provides many CurrentMedications
-  // @OneToMany(
-  //   () => CurrentMedication,
-  //   (currentMedication) => currentMedication.doctor,
-  // )
-  // providedMedications: CurrentMedication[];
 
   @OneToMany(() => Prescription, (prescription) => prescription.doctor, {
     cascade: true,
@@ -84,39 +69,3 @@ export class Doctor {
   @Column({ type: 'varchar', length: 255, nullable: true }) // string with max length 255
   title: string;
 }
-
-// @Entity()
-// export class Doctor {
-//   @PrimaryGeneratedColumn()
-//   id: number;
-
-//   @OneToOne(() => User)
-//   @JoinColumn()
-//   user: User;
-
-//   @ManyToMany(() => Education)
-//   @JoinTable()
-//   educations: Education[];
-
-//   @ManyToMany(() => Experience)
-//   @JoinTable()
-//   experiences: Experience[];
-
-//   @OneToMany(() => CurrentMedication, currentMedication => currentMedication.doctor)
-//   currentMedications: CurrentMedication[];
-
-//   @OneToMany(() => Prescription, (prescription) => prescription.doctor, {
-//     cascade: true, // Automatically persist related prescriptions if a patient is saved
-//     onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
-//   })
-//   prescriptions: Prescription[];
-
-//   @OneToMany(() => Appointment, (appointment) => appointment.doctor, {
-//     cascade: true, // Automatically persist related prescriptions if a patient is saved
-//     onDelete: 'CASCADE', // Deletes prescriptions if the patient is deleted
-//   })
-//   appointments: Appointment[];
-
-//   @Column({default : false})
-//   isApproved : boolean;
-// }

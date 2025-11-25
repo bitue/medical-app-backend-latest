@@ -71,4 +71,10 @@ export class Appointment {
     },
   )
   providedMedications: CurrentMedication[];
+
+  @Column({ nullable: true })
+  paymentIntentId: string;
+
+  @Column({ type: 'boolean', default: false })
+  paymentStatus: boolean;
 }
