@@ -1,7 +1,18 @@
-import { Controller, Post, Body, Patch, Param, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Get,
+  UseGuards,
+} from '@nestjs/common';
 import { DoctorInformationService } from './doctor-information.service';
 import { CreateDoctorInformationDto } from './dtos/create-doctor-information';
 import { UpdateDoctorInformationDto } from './dtos/update-doctor-information';
+import { RoleGuard } from '@/common/guards/role.guard';
+import { AuthGuard } from '@/common/guards/auth.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
 
 @Controller('doctor-information')
 export class DoctorInformationController {
@@ -24,6 +35,8 @@ export class DoctorInformationController {
 
   // Admin approves
   @Patch('approve/:id')
+  @UseGuards(AuthGuard, RoleGuard) // update it to ADMIN role Later
+  @Roles('admin')
   approve(@Param('id') id: number) {
     return this.service.approve(id);
   }

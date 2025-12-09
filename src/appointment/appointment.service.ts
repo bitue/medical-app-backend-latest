@@ -154,6 +154,10 @@ export class AppointmentService {
       });
       if (!doctor) throw new NotFoundException('Doctor not found');
 
+      if (doctor.isApproved === false) {
+        throw new Error('Doctor is not approved yet');
+      }
+
       const patient = await this.patientRepository.findOne({
         where: { id: patientId },
       });

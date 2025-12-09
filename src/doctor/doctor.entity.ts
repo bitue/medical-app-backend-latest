@@ -25,7 +25,9 @@ export class Doctor {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => User)
+  @OneToOne(() => User, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   user: User;
 
@@ -40,8 +42,8 @@ export class Doctor {
   specialties: Specialty[];
 
   @OneToMany(() => Prescription, (prescription) => prescription.doctor, {
-    cascade: true,
-    onDelete: 'CASCADE',
+    // cascade: true,
+    // onDelete: 'CASCADE',
   })
   prescriptions: Prescription[];
 

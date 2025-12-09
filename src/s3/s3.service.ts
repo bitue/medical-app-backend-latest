@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { 
-  S3Client, 
-  PutObjectCommand, 
-  DeleteObjectCommand, 
-  GetObjectCommand 
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+  GetObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuidv4 } from 'uuid';
-
 
 @Injectable()
 export class S3Service {
@@ -20,11 +19,26 @@ export class S3Service {
       region: this.configService.get<string>('AWS_REGION'),
       credentials: {
         accessKeyId: this.configService.get<string>('AWS_ACCESS_KEY_ID'),
-        secretAccessKey: this.configService.get<string>('AWS_SECRET_ACCESS_KEY'),
+        secretAccessKey: this.configService.get<string>(
+          'AWS_SECRET_ACCESS_KEY',
+        ),
       },
     });
 
     this.bucketName = this.configService.get<string>('AWS_BUCKET_NAME');
+    console.log(
+      'S3Service constructor called-----------------------------------------------------------------------------',
+    );
+    console.log('S3Service initialized with bucket:', this.bucketName);
+    console.log('AWS Region:', this.configService.get<string>('AWS_REGION'));
+    console.log(
+      'AWS Access Key ID:',
+      this.configService.get<string>('AWS_ACCESS_KEY_ID'),
+    );
+    console.log(
+      'AWS Secret Access Key:',
+      this.configService.get<string>('AWS_SECRET_ACCESS_KEY'),
+    );
   }
 
   // Upload file and return the file URL
@@ -43,13 +57,16 @@ export class S3Service {
 
       return this.getPresignedUrl(fileKey);
     } catch (err) {
-      console.error("S3 Upload Error:", err);
+      console.error('S3 Upload Error:', err);
       throw err;
     }
   }
 
   // Generate a pre-signed URL for a file in S3
-  async getPresignedUrl(fileKey: string, expiresInSeconds = 6 * 86400): Promise<string> {
+  async getPresignedUrl(
+    fileKey: string,
+    expiresInSeconds = 6 * 86400,
+  ): Promise<string> {
     try {
       const command = new GetObjectCommand({
         Bucket: this.bucketName,
@@ -62,7 +79,7 @@ export class S3Service {
 
       return presignedUrl;
     } catch (err) {
-      console.error("S3 Pre-signed URL Error:", err);
+      console.error('S3 Pre-signed URL Error:', err);
       throw err;
     }
   }

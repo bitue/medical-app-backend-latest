@@ -22,30 +22,83 @@ export class DoctorInformationService {
   ) {}
 
   // Doctor submits info ONLY IF he is approved
+  // async create(dto: CreateDoctorInformationDto) {
+  //   console.log(dto);
+  //   const doctor = await this.doctorRepository.findOne({
+  //     where: { id: dto.doctorId },
+  //   });
+
+  //   if (!doctor) throw new NotFoundException('Doctor not found');
+  //   if (!doctor.isApproved)
+  //     throw new BadRequestException('Doctor is not approved by admin yet');
+
+  //   const exists = await this.doctorInfoRepository.findOne({
+  //     where: { doctor: { id: dto.doctorId } },
+  //   });
+
+  //   if (exists)
+  //     throw new BadRequestException('Doctor information already exists');
+
+  //   const info = this.doctorInfoRepository.create({
+  //     doctor,
+  //     paymentAmount: dto.paymentAmount,
+  //     schedule: dto.schedule,
+  //     adminApproval: false,
+  //   });
+
+  //   return this.doctorInfoRepository.save(info);
+  // }
+
   async create(dto: CreateDoctorInformationDto) {
-    const doctor = await this.doctorRepository.findOne({
-      where: { id: dto.doctorId },
-    });
+    try {
+      console.log(dto);
 
-    if (!doctor) throw new NotFoundException('Doctor not found');
-    if (!doctor.isApproved)
-      throw new BadRequestException('Doctor is not approved by admin yet');
+      const doctor = await this.doctorRepository.findOne({
+        where: { id: dto.doctorId },
+      });
 
-    const exists = await this.doctorInfoRepository.findOne({
-      where: { doctor: { id: dto.doctorId } },
-    });
+      if (!doctor) {
+        throw new NotFoundException('Doctor not found');
+      }
 
-    if (exists)
-      throw new BadRequestException('Doctor information already exists');
+      if (!doctor.isApproved) {
+        throw new BadRequestException('Doctor is not approved by admin yet');
+      }
 
-    const info = this.doctorInfoRepository.create({
-      doctor,
-      paymentAmount: dto.paymentAmount,
-      schedule: dto.schedule,
-      adminApproval: false,
-    });
+      const exists = await this.doctorInfoRepository.findOne({
+        where: { doctor: { id: dto.doctorId } },
+      });
 
-    return this.doctorInfoRepository.save(info);
+      if (exists) {
+        throw new BadRequestException('Doctor information already exists');
+      }
+
+      const info = this.doctorInfoRepository.create({
+        doctor,
+        paymentAmount: dto.paymentAmount,
+        schedule: dto.schedule,
+        adminApproval: false,
+      });
+
+      return await this.doctorInfoRepository.save(info);
+    } catch (error) {
+      // Log full error in console for debugging
+      console.error('Create Doctor Information Error:', error);
+
+      // If NestJS error, rethrow it
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+
+      // Any unexpected error
+      throw new BadRequestException(
+        error.message ||
+          'Something went wrong while creating doctor information',
+      );
+    }
   }
 
   async update(id: number, dto: UpdateDoctorInformationDto) {

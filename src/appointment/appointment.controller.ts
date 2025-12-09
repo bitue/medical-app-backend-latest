@@ -25,7 +25,6 @@ import { AuthGuard } from '@/common/guards/auth.guard';
 import { RoleGuard } from '@/common/guards/role.guard';
 import { Roles } from '@/common/decorators/roles.decorator';
 
-@ApiTags('Appointments')
 @Controller('appointments')
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}

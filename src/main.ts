@@ -4,9 +4,20 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(
+    express.json({
+      verify: (req: any, res, buf) => {
+        if (req.originalUrl.startsWith('/stripe/webhook')) {
+          req['rawBody'] = buf.toString(); // This saves the raw body
+        }
+      },
+    }),
+  );
+  // app.use('/stripe/webhook', express.raw({ type: 'application/json' }));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.enableCors({
     origin: '*', // Replace with your frontend URL for security

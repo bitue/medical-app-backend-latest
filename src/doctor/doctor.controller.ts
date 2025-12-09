@@ -145,20 +145,13 @@ export class DoctorController {
   @Patch(':doctorId/approve')
   @UseGuards(AuthGuard, RoleGuard) // update it to ADMIN role Later
   @Roles('admin')
-  @ApiOperation({ summary: 'Approve or disapprove a doctor' })
-  @ApiParam({ name: 'doctorId', example: 1, description: 'ID of the doctor' })
-  @ApiResponse({
-    status: 200,
-    description: 'Doctor approval status updated',
-    type: Doctor,
-  })
   async updateApproval(@Param('doctorId') doctorId: number) {
     const doctor = await this.doctorService.findOne(doctorId);
 
     if (!doctor) {
       return {
         code: '404',
-        message: 'Doctor not found!',
+        message: `Doctor not found! can not find it ${doctorId}`,
         data: null,
         status: false,
       };

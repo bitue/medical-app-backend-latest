@@ -25,7 +25,7 @@ export class AuthController {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private messageService: MessageService,
+    private readonly messageService: MessageService,
     private readonly doctorService: DoctorService,
     private readonly patientService: PatientService,
     private readonly s3Service: S3Service,

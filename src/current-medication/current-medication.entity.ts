@@ -28,17 +28,14 @@ export class CurrentMedication {
   @ManyToOne(
     () => Appointment,
     (appointment) => appointment.providedMedications,
+
     {
       nullable: true,
+      cascade: true,
     },
   )
   @JoinColumn()
   appointment: Appointment;
-
-  // @ManyToOne(() => Doctor, (doctor) => doctor.providedMedications, {
-  //   nullable: true,
-  // })
-  // doctor: Doctor | null;
 
   @Column({ type: 'date', nullable: true })
   startDate: Date | null;
@@ -58,50 +55,3 @@ export class CurrentMedication {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 }
-
-// @Entity('current_medications')
-// export class CurrentMedication {
-//   @PrimaryGeneratedColumn()
-//   id: number;
-
-//   @ManyToOne(() => Patient, (patient) => patient.currentMedications)
-//   patient: Patient;
-
-//   @ManyToOne(() => Doctor, (doctor) => doctor.currentMedications, {
-//     nullable: true,
-//   })
-//   doctor: Doctor | null;
-
-//   @Column()
-//   startDate: Date;
-
-//   @Column()
-//   endDate: Date;
-
-//   @Column('text', { array: true })
-//   doses: string[];
-
-//   @Column({ default: true })
-//   isRunning: boolean; // true if medication is currently running, false otherwise
-// }
-
-// @Entity('current_medications')
-// export class CurrentMedication {
-//   @PrimaryGeneratedColumn()
-//   id: number;
-
-//   @ManyToOne(() => Patient, patient => patient.currentMedications)
-//   patient: Patient;
-
-//   @ManyToOne(() => Doctor, doctor => doctor.currentMedications)
-//   doctor: Doctor;
-
-//   @Column()
-//   startDate: Date;
-
-//   @Column()
-//   endDate: Date;
-
-//   @Column('text', { array: true })
-//   doses: string[];
-// }

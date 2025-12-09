@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Controller,
+  Delete,
   Get,
   Query,
   UseGuards,
@@ -14,6 +15,8 @@ import { UpdateUserDto } from './dtos/update-users.dto';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { AuthDto } from 'src/auth/dtos/auth.dto';
 import data from '@/utils/commonData';
+import { RoleGuard } from '@/common/guards/role.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -49,5 +52,17 @@ export class UsersController {
       data: user,
       status: true,
     };
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard, RoleGuard) // update it to ADMIN role Later
+  @Roles('admin')
+  async deleteUser(@Param('id') id: number): Promise<void> {
+    return this.usersService.delete(id);
+  }
+
+  @Delete('public/:id')
+  async deleteUserByPlaystore(@Param('id') id: number): Promise<void> {
+    return this.usersService.delete(id);
   }
 }
