@@ -3,14 +3,17 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 
 import { Body, Param, Patch } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './users.entity';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { UpdateUserDto } from './dtos/update-users.dto';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { AuthDto } from 'src/auth/dtos/auth.dto';
@@ -64,5 +67,33 @@ export class UsersController {
   @Delete('public/:id')
   async deleteUserByPlaystore(@Param('id') id: number): Promise<void> {
     return this.usersService.delete(id);
+  }
+
+  @Delete('deleteByToken')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async deleteUserByToken(@Request() req): Promise<any> {
+    try {
+      // Get user from request (set by AuthGuard)
+      const user = req.user;
+
+      if (!user || !user.id) {
+        throw new BadRequestException('User not found in token');
+      }
+
+      console.log('🗑️ Deleting user:', user.id);
+
+      // Delete the user
+      await this.usersService.delete(user.id);
+
+      return {
+        code: '200',
+        message: 'User account deleted successfully',
+        status: true,
+      };
+    } catch (error) {
+      console.error('❌ Error deleting user:', error);
+      throw new BadRequestException(error.message || 'Failed to delete user');
+    }
   }
 }
