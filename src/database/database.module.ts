@@ -18,6 +18,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true, // Be cautious about using synchronize in production
         autoLoadEntities: true,
+        ssl: {
+          rejectUnauthorized: false, // Add this!
+        },
       }),
       inject: [ConfigService],
     }),
