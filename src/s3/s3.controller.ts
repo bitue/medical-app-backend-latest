@@ -4,13 +4,13 @@ import { S3Service } from './s3.service';
 
 @Controller('s3')
 export class S3Controller {
-  constructor(private readonly s3Service: S3Service) {}
+  constructor(private readonly s3Service: S3Service) { }
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: any) {
-    const fileUrl = await this.s3Service.uploadFile(file);
-    return { fileUrl };
+    const uploadResult = await this.s3Service.uploadFile(file);
+    return { ...uploadResult };
   }
 
   @Delete('delete/:fileKey')

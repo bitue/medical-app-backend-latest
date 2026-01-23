@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   S3Client,
   PutObjectCommand,
@@ -26,23 +26,14 @@ export class S3Service {
     });
 
     this.bucketName = this.configService.get<string>('AWS_BUCKET_NAME');
-    console.log(
-      'S3Service constructor called-----------------------------------------------------------------------------',
-    );
-    console.log('S3Service initialized with bucket:', this.bucketName);
-    console.log('AWS Region:', this.configService.get<string>('AWS_REGION'));
-    console.log(
-      'AWS Access Key ID:',
-      this.configService.get<string>('AWS_ACCESS_KEY_ID'),
-    );
-    console.log(
-      'AWS Secret Access Key:',
-      this.configService.get<string>('AWS_SECRET_ACCESS_KEY'),
-    );
   }
 
-  // Upload file and return the file URL
-  async uploadFile(file: any): Promise<string> {
+  // Upload file and return the file key and pre-signed URL
+  async uploadFile(file: Express.Multer.File): Promise<{ key: string; url: string }> {
+    if (!file) {
+      throw new BadRequestException('No file provided');
+    }
+
     try {
       const fileKey = `${uuidv4()}-${file.originalname}`;
 
@@ -55,7 +46,9 @@ export class S3Service {
 
       await this.s3Client.send(new PutObjectCommand(uploadParams));
 
-      return this.getPresignedUrl(fileKey);
+      const presignedUrl = await this.getPresignedUrl(fileKey);
+
+      return { key: fileKey, url: presignedUrl };
     } catch (err) {
       console.error('S3 Upload Error:', err);
       throw err;

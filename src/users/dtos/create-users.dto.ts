@@ -14,6 +14,7 @@ export class CreateUserDto {
   username: string;
 
   @IsString()
+  @IsOptional()
   profileImage: string;
 
   @IsEmail()

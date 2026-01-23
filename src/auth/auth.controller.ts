@@ -5,7 +5,9 @@ import {
   InternalServerErrorException,
   Post,
   UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { UsersService } from 'src/users/users.service';
 import { CreateUserDto } from 'src/users/dtos/create-users.dto';
 import { User } from 'src/users/users.entity';
@@ -29,12 +31,26 @@ export class AuthController {
     private readonly doctorService: DoctorService,
     private readonly patientService: PatientService,
     private readonly s3Service: S3Service,
-  ) {}
+  ) { }
 
   @Post('signup')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fileSize: 1 * 1024 * 1024 }, // 1MB
+      fileFilter: (req, file, callback) => {
+        if (!file.mimetype.match(/^image\/(jpeg|png|jpg)$/)) {
+          return callback(
+            new BadRequestException('Only JPG and PNG files are allowed'),
+            false,
+          );
+        }
+        callback(null, true);
+      },
+    }),
+  )
   async signup(
     @Body() createUserDto: CreateUserDto,
-    @UploadedFile() file: any,
+    @UploadedFile() file: Express.Multer.File,
   ): Promise<AuthDto> {
     try {
       const existingUser = await this.usersService.findOne(createUserDto.email);
@@ -55,7 +71,11 @@ export class AuthController {
       }
 
       // for the image upload profile image
-      const profileImage = file ? await this.s3Service.uploadFile(file) : null;
+      let profileImage = null;
+      if (file) {
+        const uploadResult = await this.s3Service.uploadFile(file);
+        profileImage = uploadResult.key;
+      }
       createUserDto.profileImage = profileImage;
 
       const user = await this.usersService.create(createUserDto);
