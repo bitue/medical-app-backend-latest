@@ -26,7 +26,7 @@ export class ReportController {
     private readonly doctorService: DoctorService,
     private readonly s3Service: S3Service,
     private readonly patientService: PatientService,
-  ) {}
+  ) { }
 
   @Post()
   @UseInterceptors(FileInterceptor('image'))
@@ -85,10 +85,10 @@ export class ReportController {
           status: false,
         };
       }
-      const imageUrl = await this.s3Service.uploadFile(file);
+      const uploadResult = await this.s3Service.uploadFile(file);
 
       const report = await this.reportService.create({
-        docPath: imageUrl,
+        docPath: uploadResult.key,
         patient: existingPatient,
         reportDate: reportData?.reportDate,
         title: reportData?.title,

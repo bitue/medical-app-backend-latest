@@ -11,11 +11,11 @@ import { PatientService } from '@/patient/patient.service';
 
 @Controller('prescription')
 export class PrescriptionController {
-    constructor(private readonly prescriptionService: PrescriptionService, private readonly doctorService: DoctorService, private readonly s3Service : S3Service, private readonly patientService: PatientService) {}
+  constructor(private readonly prescriptionService: PrescriptionService, private readonly doctorService: DoctorService, private readonly s3Service: S3Service, private readonly patientService: PatientService) { }
 
   @Post()
   @UseInterceptors(FileInterceptor('image'))
-   @ApiBearerAuth()
+  @ApiBearerAuth()
   @ApiResponse({
     status: 201,
     description: 'Prescription successfully created.',
@@ -61,42 +61,42 @@ export class PrescriptionController {
       throw new BadRequestException('Doctor ID is required');
     }
 
-   try{
-    const existingDoctor = await this.doctorService.findOne(prescriptionData?.doctorId);
-    const existingPatient = await this.patientService.findOne(prescriptionData.patientId);
-  
-    if(!existingDoctor){
+    try {
+      const existingDoctor = await this.doctorService.findOne(prescriptionData?.doctorId);
+      const existingPatient = await this.patientService.findOne(prescriptionData.patientId);
 
-       return {
-        code : '400',
-        message : "Doctor not found!",
-        data : null,
-        status : false
-       }
-    }
+      if (!existingDoctor) {
 
-    if(!existingPatient){
+        return {
+          code: '400',
+          message: "Doctor not found!",
+          data: null,
+          status: false
+        }
+      }
+
+      if (!existingPatient) {
+
+        return {
+          code: '400',
+          message: "Patient not found!",
+          data: null,
+          status: false
+        }
+      }
+      const uploadResult = await this.s3Service.uploadFile(file);
+
+      const prescription = await this.prescriptionService.create({ docPath: uploadResult.key, patient: existingPatient, prescriptionDate: prescriptionData?.prescriptionDate, doctor: existingDoctor, title: prescriptionData?.title });
 
       return {
-       code : '400',
-       message : "Patient not found!",
-       data : null,
-       status : false
+        code: '201',
+        message: "Prescription data created successfully!",
+        data: prescription,
+        status: true
       }
-   }
-    const imageUrl = await this.s3Service.uploadFile(file);
-
-     const prescription = await this.prescriptionService.create({docPath : imageUrl, patient : existingPatient, prescriptionDate : prescriptionData?.prescriptionDate, doctor : existingDoctor, title : prescriptionData?.title});
-
-     return {
-      code : '201',
-      message : "Prescription data created successfully!",
-      data : prescription,
-      status : true
-     }
-   }catch(err){
-    console.log(err)
-   }
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   @Get('patient/:patientId')
