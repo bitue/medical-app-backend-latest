@@ -9,7 +9,9 @@ export class OperationHistory {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Patient, patient => patient.operationHistories)
+  @ManyToOne(() => Patient, patient => patient.operationHistories, {
+    onDelete: 'CASCADE',
+  })
   patient: Patient;
 
   @Column()

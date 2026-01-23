@@ -22,6 +22,7 @@ export class CurrentMedication {
 
   @ManyToOne(() => Patient, (patient) => patient.currentMedications, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   patient: Patient;
 

@@ -23,7 +23,7 @@ import { Roles } from '@/common/decorators/roles.decorator';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Get('commonQuery')
   async commonQuery(@Query('key') key: string) {
@@ -61,12 +61,12 @@ export class UsersController {
   @UseGuards(AuthGuard, RoleGuard) // update it to ADMIN role Later
   @Roles('admin')
   async deleteUser(@Param('id') id: number): Promise<void> {
-    return this.usersService.delete(id);
+    return this.usersService.deleteAccount(id);
   }
 
   @Delete('public/:id')
   async deleteUserByPlaystore(@Param('id') id: number): Promise<void> {
-    return this.usersService.delete(id);
+    return this.usersService.deleteAccount(id);
   }
 
   @Delete('deleteByToken')
@@ -84,7 +84,7 @@ export class UsersController {
       console.log('🗑️ Deleting user:', user.id);
 
       // Delete the user
-      await this.usersService.delete(user.id);
+      await this.usersService.deleteAccount(user.id);
 
       return {
         code: '200',
