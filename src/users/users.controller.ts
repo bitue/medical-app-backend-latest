@@ -85,10 +85,10 @@ export class UsersController {
     }
   }
 
-  @Delete(':id')
-  @UseGuards(AuthGuard, RoleGuard) // update it to ADMIN role Later
-  @Roles('admin')
-  async deleteUser(@Param('id') id: number): Promise<void> {
-    return this.usersService.deleteAccount(id);
-  }
+  // @Delete(':id')
+  // @UseGuards(AuthGuard, RoleGuard) // update it to ADMIN role Later
+  // @Roles('admin')
+  // async deleteUser(@Param('id') id: number): Promise<void> {
+  //   return this.usersService.deleteAccount(id);
+  // }
 }
