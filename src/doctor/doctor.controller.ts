@@ -22,6 +22,7 @@ import { Roles } from '@/common/decorators/roles.decorator';
 import { RoleGuard } from '@/common/guards/role.guard';
 import { CreateProfileDto } from './dtos/create-profile.dto';
 import { CreateDoctorDto } from './dtos/create-doctor.dto';
+import { UpdateDoctorDto } from './dtos/update-doctor.dto';
 import { medicalInstitutes } from '@/utils/medicalCollegeData';
 
 @Controller('doctors')
@@ -29,7 +30,7 @@ export class DoctorController {
   constructor(
     private readonly doctorService: DoctorService,
     private readonly userService: UsersService,
-  ) {}
+  ) { }
 
   @Get('getDoctorByToken')
   @UseGuards(AuthGuard)
@@ -136,6 +137,24 @@ export class DoctorController {
       throw new NotFoundException('Doctor not found');
     }
     return doctor;
+  }
+
+  @Patch(':id')
+  @UseGuards(AuthGuard)
+  async update(
+    @Param('id') id: string,
+    @Body() updateDoctorDto: UpdateDoctorDto,
+  ) {
+    const updatedDoctor = await this.doctorService.update(
+      +id,
+      updateDoctorDto,
+    );
+    return {
+      code: '200',
+      message: 'Doctor updated successfully',
+      data: updatedDoctor,
+      status: true,
+    };
   }
 
   @Get('with-status')

@@ -3,10 +3,13 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
+  Delete,
   Param,
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { UpdateCurrentMedicationDto } from './dtos/update-current-medication.dto';
 import { CurrentMedicationService } from './current-medication.service';
 import { PatientService } from 'src/patient/patient.service';
 import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
@@ -24,7 +27,7 @@ export class CurrentMedicationController {
     private readonly currentMedicationService: CurrentMedicationService,
     private readonly patientService: PatientService,
     private readonly doctorService: DoctorService,
-  ) {}
+  ) { }
 
   @Get('patient/:patientId/medications')
   @UseGuards(AuthGuard, RoleGuard)
@@ -77,4 +80,36 @@ export class CurrentMedicationController {
       console.log(err);
     }
   }
+
+  @Patch(':id')
+  @UseGuards(AuthGuard)
+  async update(
+    @Param('id') id: string,
+    @Body() updateCurrentMedicationDto: UpdateCurrentMedicationDto,
+  ) {
+    const updatedMedication = await this.currentMedicationService.update(
+      +id,
+      updateCurrentMedicationDto,
+    );
+    return {
+      code: '200',
+      message: 'Current medication updated successfully',
+      data: updatedMedication,
+      status: true,
+    };
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard)
+  async remove(@Param('id') id: string) {
+    await this.currentMedicationService.remove(+id);
+    return {
+      code: '200',
+      message: 'Current medication deleted successfully',
+      status: true,
+    };
+  }
+
+  //update 
+
 }

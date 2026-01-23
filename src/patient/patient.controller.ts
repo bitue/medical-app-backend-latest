@@ -5,6 +5,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -14,10 +15,11 @@ import { Patient } from './patient.entity';
 import { AuthGuard } from '@/common/guards/auth.guard';
 import { RoleGuard } from '@/common/guards/role.guard';
 import { Roles } from '@/common/decorators/roles.decorator';
+import { UpdatePatientDto } from './dtos/update-patient.dto';
 
 @Controller('patient')
 export class PatientController {
-  constructor(private readonly patentService: PatientService) {}
+  constructor(private readonly patentService: PatientService) { }
 
   @Get()
   @UseGuards(AuthGuard)
@@ -48,6 +50,24 @@ export class PatientController {
       code: 200,
       message: 'Patient retrieved successfully!',
       data,
+      status: true,
+    };
+  }
+
+  @Patch(':id')
+  @UseGuards(AuthGuard)
+  async update(
+    @Param('id') id: string,
+    @Body() updatePatientDto: UpdatePatientDto,
+  ) {
+    const updatedPatient = await this.patentService.update(
+      +id,
+      updatePatientDto,
+    );
+    return {
+      code: '200',
+      message: 'Patient updated successfully',
+      data: updatedPatient,
       status: true,
     };
   }

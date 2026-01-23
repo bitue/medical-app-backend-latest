@@ -7,6 +7,8 @@ import { DoctorService } from 'src/doctor/doctor.service';
 import { Doctor } from 'src/doctor/doctor.entity';
 import { Patient } from 'src/patient/patient.entity';
 import { Appointment } from '@/appointment/appointment.entity';
+import { UpdateCurrentMedicationDto } from './dtos/update-current-medication.dto';
+import { NotFoundException } from '@nestjs/common';
 
 // export interface ICurrentMedication {
 //   doctor: Doctor; // Store full Doctor object
@@ -22,7 +24,7 @@ export class CurrentMedicationService {
   constructor(
     @InjectRepository(CurrentMedication)
     private readonly currentMedicationRepository: Repository<CurrentMedication>,
-  ) {}
+  ) { }
 
   async create(
     currentMedicationData: CreateCurrentMedicationDto,
@@ -50,11 +52,11 @@ export class CurrentMedicationService {
       updatedAt: med.updatedAt,
       appointment: med.appointment
         ? {
-            id: med.appointment.id,
-            accessTime: med.appointment.accessTime,
-            createdAt: med.appointment.createdAt,
-            updatedAt: med.appointment.updatedAt,
-          }
+          id: med.appointment.id,
+          accessTime: med.appointment.accessTime,
+          createdAt: med.appointment.createdAt,
+          updatedAt: med.appointment.updatedAt,
+        }
         : null,
     }));
   }
@@ -66,5 +68,33 @@ export class CurrentMedicationService {
       currentMedicationData,
     );
     return await this.currentMedicationRepository.save(currentMedication);
+  }
+
+  async update(
+    id: number,
+    currentMedicationData: UpdateCurrentMedicationDto,
+  ): Promise<CurrentMedication> {
+    const currentMedication = await this.currentMedicationRepository.findOne({
+      where: { id },
+    });
+
+    if (!currentMedication) {
+      throw new NotFoundException('Current medication not found');
+    }
+
+    Object.assign(currentMedication, currentMedicationData);
+    return await this.currentMedicationRepository.save(currentMedication);
+  }
+
+  async remove(id: number): Promise<void> {
+    const currentMedication = await this.currentMedicationRepository.findOne({
+      where: { id },
+    });
+
+    if (!currentMedication) {
+      throw new NotFoundException('Current medication not found');
+    }
+
+    await this.currentMedicationRepository.remove(currentMedication);
   }
 }

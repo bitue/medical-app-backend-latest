@@ -12,6 +12,7 @@ import { CreateDoctorDto } from './dtos/create-doctor.dto';
 import { CallGateway } from '@/call/call.gateway';
 import { Specialty } from '@/specialties/entities/specialty.entity';
 import { CreateProfileDto } from './dtos/create-profile.dto';
+import { UpdateDoctorDto } from './dtos/update-doctor.dto';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { EducationService } from '@/education/education.service';
 import { ExperienceService } from '@/experience/experience.service';
@@ -33,7 +34,7 @@ export class DoctorService {
     private readonly experienceService: ExperienceService,
 
     private readonly userService: UsersService,
-  ) {}
+  ) { }
 
   async create(createDoctorDto: Partial<CreateDoctorDto>) {
     try {
@@ -141,61 +142,6 @@ export class DoctorService {
     return this.doctorRepository.save(doctor);
   }
 
-  // async crerateDoctorProfile(
-  //   createProfileDoctor: CreateProfileDto,
-  //   user: User,
-  // ): Promise<Doctor> {
-  //   const doctor = await this.findByUserId(user.id);
-
-  //   console.log(doctor, 'form -------------------->>>>>>>>>>>>>>>>>>>');
-
-  //   doctor.introduction = createProfileDoctor.introduction ?? null;
-  //   doctor.BMDC = createProfileDoctor.BMDC ?? null;
-  //   console.log(createProfileDoctor.specialtyIds, 0);
-
-  //   if (createProfileDoctor.specialtyIds?.length) {
-  //     console.log(1);
-  //     const specialties = await this.specialRepository.find({
-  //       where: {
-  //         id: In(createProfileDoctor.specialtyIds),
-  //       },
-  //     });
-  //     console.log(specialties, '---------------------------------->>');
-  //     doctor.specialties = specialties;
-  //   } else {
-  //     console.log(2);
-  //     doctor.specialties = [];
-  //   }
-
-  //   return this.doctorRepository.save(doctor);
-  // }
-
-  // async create(createDoctorDto: Partial<CreateDoctorDto>): Promise<Doctor> {
-  //   const doctor = this.doctorRepository.create();
-  //   doctor.user = createDoctorDto.user;
-  //   if (createDoctorDto.education) {
-  //     doctor.educations = [createDoctorDto.education];
-  //   }
-  //   if (createDoctorDto.experience) {
-  //     doctor.experiences = [createDoctorDto.experience];
-  //   }
-
-  //   doctor.introduction = createDoctorDto.introduction ?? null;
-  //   doctor.BMDC = createDoctorDto.BMDC ?? null;
-
-  //   if (createDoctorDto.specialtyIds.length) {
-  //     const specialties = await this.specialRepository.find({
-  //       where: {
-  //         id: In(createDoctorDto.specialtyIds),
-  //       },
-  //     });
-  //     doctor.specialties = specialties;
-  //   } else {
-  //     doctor.specialties = [];
-  //   }
-
-  //   return this.doctorRepository.save(doctor);
-  // }
 
   async getAllDoctorsWithStatus() {
     const doctors = await this.findAll();
@@ -231,12 +177,6 @@ export class DoctorService {
     });
   }
 
-  // async findDoctorById(id: number): Promise<Doctor | null> {
-  //   return this.doctorRepository.findOne({
-  //     where: { id },
-  //     relations: ['experiences', 'educations', 'current_medications'], // Load these relations eagerly
-  //   });
-  // }
 
   async findDoctorById(id: number): Promise<Doctor | null> {
     try {
@@ -262,12 +202,43 @@ export class DoctorService {
     return this.doctorRepository.findOne({ where: { id } });
   }
 
-  async update(id: number, doctorData: Partial<Doctor>): Promise<Doctor> {
+  async update(id: number, doctorData: UpdateDoctorDto): Promise<Doctor> {
     const doctor = await this.findOne(id);
     if (!doctor) {
       throw new BadRequestException('Doctor Not Found!');
     }
-    Object.assign(doctor, doctorData);
+
+    if (doctorData.introduction !== undefined) {
+      doctor.introduction = doctorData.introduction;
+    }
+    if (doctorData.BMDC !== undefined) {
+      doctor.BMDC = doctorData.BMDC;
+    }
+    if (doctorData.title !== undefined) {
+      doctor.title = doctorData.title;
+    }
+
+    if (doctorData.specialtyIds) {
+      const specialties = await this.specialRepository.find({
+        where: {
+          id: In(doctorData.specialtyIds),
+        },
+      });
+      doctor.specialties = specialties;
+    }
+
+    if (doctorData.education) {
+      const edu = await this.educationService.createMany(doctorData.education);
+      doctor.educations = edu;
+    }
+
+    if (doctorData.experience) {
+      const exp = await this.experienceService.createMany(
+        doctorData.experience,
+      );
+      doctor.experiences = exp;
+    }
+
     return this.doctorRepository.save(doctor);
   }
 
@@ -321,24 +292,5 @@ export class DoctorService {
       .getMany();
 
     return doctors;
-
-    // if (!keyword) return [];
-
-    // const lowerKeyword = `%${keyword.toLowerCase()}%`;
-
-    // const doctors = await this.doctorRepository
-    //   .createQueryBuilder('doctor')
-    //   .leftJoinAndSelect('doctor.specialties', 'specialty')
-    //   .leftJoinAndSelect('doctor.user', 'user')
-    //   .where('LOWER(specialty.typicalName) LIKE :lowerKeyword', {
-    //     lowerKeyword,
-    //   })
-    //   .orWhere('LOWER(specialty.professionName) LIKE :lowerKeyword', {
-    //     lowerKeyword,
-    //   })
-    //   .orWhere('LOWER(user.username) LIKE :lowerKeyword', { lowerKeyword })
-    //   .getMany();
-
-    // return doctors;
   }
 }
