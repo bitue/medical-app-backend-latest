@@ -57,19 +57,7 @@ export class UsersController {
     };
   }
 
-  @Delete(':id')
-  @UseGuards(AuthGuard, RoleGuard) // update it to ADMIN role Later
-  @Roles('admin')
-  async deleteUser(@Param('id') id: number): Promise<void> {
-    return this.usersService.deleteAccount(id);
-  }
-
-  @Delete('public/:id')
-  async deleteUserByPlaystore(@Param('id') id: number): Promise<void> {
-    return this.usersService.deleteAccount(id);
-  }
-
-  @Delete('deleteByToken')
+  @Delete('deleteAllData')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async deleteUserByToken(@Request() req): Promise<any> {
@@ -95,5 +83,12 @@ export class UsersController {
       console.error('❌ Error deleting user:', error);
       throw new BadRequestException(error.message || 'Failed to delete user');
     }
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard, RoleGuard) // update it to ADMIN role Later
+  @Roles('admin')
+  async deleteUser(@Param('id') id: number): Promise<void> {
+    return this.usersService.deleteAccount(id);
   }
 }
