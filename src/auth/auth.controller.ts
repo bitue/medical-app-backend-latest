@@ -36,7 +36,7 @@ export class AuthController {
   @Post('signup')
   @UseInterceptors(
     FileInterceptor('file', {
-      limits: { fileSize: 1 * 1024 * 1024 }, // 1MB
+      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
       fileFilter: (req, file, callback) => {
         if (!file.mimetype.match(/^image\/(jpeg|png|jpg)$/)) {
           return callback(
@@ -74,7 +74,7 @@ export class AuthController {
       let profileImage = null;
       if (file) {
         const uploadResult = await this.s3Service.uploadFile(file);
-        profileImage = uploadResult.key;
+        profileImage = uploadResult.url; // Save full URL
       }
       createUserDto.profileImage = profileImage;
 

@@ -45,10 +45,13 @@ export class S3Service {
       };
 
       await this.s3Client.send(new PutObjectCommand(uploadParams));
+      const region = this.configService.get<string>('AWS_REGION');
+      const publicUrl = `https://${this.bucketName}.s3.${region}.amazonaws.com/${fileKey}`;
 
-      const presignedUrl = await this.getPresignedUrl(fileKey);
+      console.log('✅ File uploaded successfully:', publicUrl);
 
-      return { key: fileKey, url: presignedUrl };
+      // Return both key (for delete) and publicUrl (for frontend display)
+      return { key: fileKey, url: publicUrl };
     } catch (err) {
       console.error('S3 Upload Error:', err);
       throw err;
