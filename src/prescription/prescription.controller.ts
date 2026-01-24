@@ -86,7 +86,7 @@ export class PrescriptionController {
       }
       const uploadResult = await this.s3Service.uploadFile(file);
 
-      const prescription = await this.prescriptionService.create({ docPath: uploadResult.url, patient: existingPatient, prescriptionDate: prescriptionData?.prescriptionDate, doctor: existingDoctor, title: prescriptionData?.title });
+      const prescription = await this.prescriptionService.create({ docPath: uploadResult.key, patient: existingPatient, prescriptionDate: prescriptionData?.prescriptionDate, doctor: existingDoctor, title: prescriptionData?.title });
 
       return {
         code: '201',

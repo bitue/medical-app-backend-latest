@@ -88,7 +88,7 @@ export class ReportController {
       const uploadResult = await this.s3Service.uploadFile(file);
 
       const report = await this.reportService.create({
-        docPath: uploadResult.url,
+        docPath: uploadResult.key,
         patient: existingPatient,
         reportDate: reportData?.reportDate,
         title: reportData?.title,

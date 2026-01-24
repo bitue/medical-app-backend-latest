@@ -31,7 +31,7 @@ export class User {
   dob: Date;
 
   @Column({ nullable: true })
-  profileImage: String;
+  profileImage: string;
 
   @Column({
     type: 'enum',

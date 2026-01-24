@@ -74,7 +74,7 @@ export class AuthController {
       let profileImage = null;
       if (file) {
         const uploadResult = await this.s3Service.uploadFile(file);
-        profileImage = uploadResult.url; // Save full URL
+        profileImage = uploadResult.key;
       }
       createUserDto.profileImage = profileImage;
 
@@ -109,6 +109,7 @@ export class AuthController {
           id: user?.id,
           role: user?.role,
           patientOrDoctorId: newUser?.id,
+          profileImage: profileImage ? await this.s3Service.getPresignedUrl(profileImage) : null,
         },
         status: true,
       };
@@ -138,6 +139,10 @@ export class AuthController {
       throw new BadRequestException('Invalid credentials!');
     }
 
+    // Refresh profile image URL (it might have expired since findOne called at start?)
+    // Actually findOne was called at start. Just use that user object.
+    // If findOne logic generates URL, user.profileImage has it.
+
     let newUser;
 
     if (user.role === 'doctor') {
@@ -156,6 +161,7 @@ export class AuthController {
         username: user.username,
         id: user?.id,
         role: user?.role,
+        profileImage: user?.profileImage,
         patientOrDoctorId: newUser?.id,
       },
       status: true,

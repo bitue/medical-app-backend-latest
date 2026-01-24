@@ -12,13 +12,14 @@ export class AuthDto {
         token: string;
         email: string;
         username: string;
-        id : number;
-        role : string;
+        id: number;
+        role: string;
         patientOrDoctorId: number;
+        profileImage?: string;
     };
 
     @IsBoolean()
-    status : boolean
+    status: boolean
 }
 
 

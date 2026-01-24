@@ -23,7 +23,11 @@ export class UsersService {
   }
 
   async findOne(email: string): Promise<User> {
-    return this.usersRepository.findOne({ where: { email } });
+    const user = await this.usersRepository.findOne({ where: { email } });
+    if (user && user.profileImage) {
+      user.profileImage = await this.s3Service.getPresignedUrl(user.profileImage as string);
+    }
+    return user;
   }
 
   async update(email: string, userData: Partial<UpdateUserDto>): Promise<User> {
