@@ -15,6 +15,7 @@ import { UsersService } from './users.service';
 import { User } from './users.entity';
 import { ApiBearerAuth, ApiBody, ApiResponse } from '@nestjs/swagger';
 import { UpdateUserDto } from './dtos/update-users.dto';
+import { DeleteUserDto } from './dtos/delete-user.dto';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { AuthDto } from 'src/auth/dtos/auth.dto';
 import data from '@/utils/commonData';
@@ -82,6 +83,21 @@ export class UsersController {
     } catch (error) {
       console.error('❌ Error deleting user:', error);
       throw new BadRequestException(error.message || 'Failed to delete user');
+    }
+  }
+
+  @Delete('deleteByCredentials')
+  @HttpCode(HttpStatus.OK)
+  async deleteByCredentials(@Body() dto: DeleteUserDto): Promise<any> {
+    try {
+      await this.usersService.deleteWithCredentials(dto);
+      return {
+        code: 200,
+        message: 'Account deleted successfully',
+        status: true,
+      };
+    } catch (error) {
+      throw new BadRequestException(error.message || 'Failed to delete account');
     }
   }
 

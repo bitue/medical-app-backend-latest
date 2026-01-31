@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { User } from './users.entity';
@@ -7,6 +7,8 @@ import { UpdateUserDto } from './dtos/update-users.dto';
 import { S3Service } from '@/s3/s3.service';
 import { Patient } from '@/patient/patient.entity';
 import { Doctor } from '@/doctor/doctor.entity';
+import * as bcrypt from 'bcryptjs';
+import { DeleteUserDto } from './dtos/delete-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -99,5 +101,21 @@ export class UsersService {
 
   async delete(id: number): Promise<void> {
     await this.deleteAccount(id);
+  }
+
+  async deleteWithCredentials(dto: DeleteUserDto): Promise<void> {
+    const user = await this.usersRepository.findOne({ where: { email: dto.email } });
+
+    if (!user) {
+      throw new BadRequestException('Invalid credentials!');
+    }
+
+    const isPasswordValid = await bcrypt.compare(dto.password, user.password);
+
+    if (!isPasswordValid) {
+      throw new BadRequestException('Invalid credentials!');
+    }
+
+    await this.deleteAccount(user.id);
   }
 }
