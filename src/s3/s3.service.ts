@@ -16,19 +16,19 @@ export class S3Service {
 
   constructor(private readonly configService: ConfigService) {
     this.s3Client = new S3Client({
-      region: this.configService.get<string>('AWS_REGION'),
+      endpoint: this.configService.get<string>('DO_SPACES_ENDPOINT'),
+      region: this.configService.get<string>('DO_SPACES_REGION'),
+      forcePathStyle: false,
       credentials: {
-        accessKeyId: this.configService.get<string>('AWS_ACCESS_KEY_ID'),
-        secretAccessKey: this.configService.get<string>(
-          'AWS_SECRET_ACCESS_KEY',
-        ),
+        accessKeyId: this.configService.get<string>('DO_SPACES_ACCESS_KEY'),
+        secretAccessKey: this.configService.get<string>('DO_SPACES_SECRET_KEY'),
       },
     });
 
-    this.bucketName = this.configService.get<string>('AWS_BUCKET_NAME');
+    this.bucketName = this.configService.get<string>('DO_SPACES_BUCKET');
   }
 
-  // Upload file and return the file key and pre-signed URL
+  // Upload file and return the file key and public URL
   async uploadFile(file: Express.Multer.File): Promise<{ key: string; url: string }> {
     if (!file) {
       throw new BadRequestException('No file provided');
@@ -45,20 +45,20 @@ export class S3Service {
       };
 
       await this.s3Client.send(new PutObjectCommand(uploadParams));
-      const region = this.configService.get<string>('AWS_REGION');
-      const publicUrl = `https://${this.bucketName}.s3.${region}.amazonaws.com/${fileKey}`;
+      const region = this.configService.get<string>('DO_SPACES_REGION');
+      const publicUrl = `https://${this.bucketName}.${region}.digitaloceanspaces.com/${fileKey}`;
 
       console.log('✅ File uploaded successfully:', publicUrl);
 
       // Return both key (for delete) and publicUrl (for frontend display)
       return { key: fileKey, url: publicUrl };
     } catch (err) {
-      console.error('S3 Upload Error:', err);
+      console.error('Upload Error:', err);
       throw err;
     }
   }
 
-  // Generate a pre-signed URL for a file in S3
+  // Generate a pre-signed URL for a file in DigitalOcean Spaces
   async getPresignedUrl(
     fileKey: string,
     expiresInSeconds = 6 * 86400,
@@ -70,17 +70,17 @@ export class S3Service {
       });
 
       const presignedUrl = await getSignedUrl(this.s3Client, command, {
-        expiresIn: expiresInSeconds, // URL expiry time (default: 1 hour)
+        expiresIn: expiresInSeconds, // URL expiry time (default: 6 days)
       });
 
       return presignedUrl;
     } catch (err) {
-      console.error('S3 Pre-signed URL Error:', err);
+      console.error('Pre-signed URL Error:', err);
       throw err;
     }
   }
 
-  // Delete file from S3
+  // Delete file from DigitalOcean Spaces
   async deleteFile(fileKey: string): Promise<void> {
     const deleteParams = {
       Bucket: this.bucketName,
