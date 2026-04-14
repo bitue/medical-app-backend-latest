@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18-alpine AS builder
 
 # Install necessary build dependencies (Python and build tools for node-gyp)
 RUN apk add --no-cache \
@@ -7,45 +7,43 @@ RUN apk add --no-cache \
     g++ \
     && ln -sf python3 /usr/bin/python
 
-# Set working directory
 WORKDIR /app
 
-RUN rm -rf node_modules
-
-RUN npm install -g @nestjs/cli ts-node typeorm-ts-node-esm
+RUN npm install -g @nestjs/cli pnpm ts-node typeorm-ts-node-esm
 
 # Copy package.json and pnpm-lock.yaml first (for better caching)
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies including devDependencies (needed for build)
-RUN npm install -g pnpm && pnpm install --no-frozen-lockfile
+# Install all dependencies (including devDependencies for build)
+RUN pnpm install --no-frozen-lockfile
 
-# Rebuild bcrypt (will now succeed because Python and build tools are available)
+# Rebuild bcrypt
 RUN npm rebuild bcrypt --build-from-source
 
-# Copy the rest of the application (ensure src/ and tsconfig.json are copied)
+# Copy source code
 COPY . .
 
-# Debugging: List files to ensure everything is copied
-RUN ls -la /app
-
-# Set environment variables
-ENV NODE_ENV=production
-
-ENV NODE_PATH=/app/node_modules
-
-# Ensure TypeScript is built before the app starts (run tsc)
+# Build the application
 RUN pnpm run build
-
-# Debugging: Verify dist folder exists and contains the expected files
-RUN ls -la /app/dist || echo "Build failed: dist folder missing"
 
 # Prune dev dependencies after build
 RUN pnpm prune --prod
 
-# Expose application port
+# ---- Production image ----
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy built app and production node_modules from builder
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/tsconfig.json ./
+COPY --from=builder /app/tsconfig.build.json ./
+
+ENV NODE_ENV=production
+ENV NODE_PATH=/app/node_modules
+
 EXPOSE 3000
 
-# Start the application
-CMD [ "npm", "run", "start:dev"]
-# CMD ["sh", "-c", "pnpm run migration:generate && pnpm run migration:run && pnpm run start:dev"]
+CMD ["node", "dist/src/main.js"]
