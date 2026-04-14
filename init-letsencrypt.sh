@@ -55,7 +55,11 @@ echo "Certificate generated successfully!"
 
 # Start nginx with the real certificate
 echo "Starting all services with docker-compose..."
-docker compose up -d
+if docker compose version &>/dev/null; then
+  docker compose up -d
+else
+  docker-compose up -d
+fi
 
 echo ""
 echo "============================================"
