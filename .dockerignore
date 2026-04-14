@@ -6,7 +6,6 @@ dist
 *.env
 production.env
 certbot
-nginx
 README.md
 .eslintrc.js
 .prettierrc

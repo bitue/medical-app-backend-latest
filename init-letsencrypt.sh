@@ -15,7 +15,7 @@ if ! [ -x "$(command -v docker-compose)" ] && ! docker compose version &>/dev/nu
   exit 1
 fi
 
-DOMAIN="medical-app.xyz"
+DOMAIN="care-bd.xyz"
 EMAIL="ashikul.islam.ugrad16@gmail.com"
 STAGING=0 # Set to 1 for staging (test certs, no rate limit)
 
