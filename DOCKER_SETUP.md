@@ -140,8 +140,8 @@ docker compose ps
 docker compose logs -f
 
 # Test HTTPS access
-curl https://api.carebod.xyz
-curl https://carebod.xyz
+curl https://api.carebd.xyz
+curl https://carebd.xyz
 ```
 
 ### Step 4: SSL Certificate Auto-Renewal
