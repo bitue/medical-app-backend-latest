@@ -15,7 +15,7 @@ if ! [ -x "$(command -v docker-compose)" ] && ! docker compose version &>/dev/nu
   exit 1
 fi
 
-DOMAIN="care-bd.xyz"
+DOMAIN="carebod.xyz"
 EMAIL="ashikul.islam.ugrad16@gmail.com"
 STAGING=0 # Set to 1 for staging (test certs, no rate limit)
 
@@ -59,8 +59,8 @@ docker compose up -d
 
 echo ""
 echo "============================================"
-echo "  SSL setup complete for $DOMAIN!"
+echo "  SSL setup complete for carebod.xyz!"
 echo "  Your app should now be accessible at:"
-echo "  https://$DOMAIN"
-echo "  https://api.$DOMAIN"
+echo "  https://carebod.xyz"
+echo "  https://api.carebod.xyz"
 echo "============================================"

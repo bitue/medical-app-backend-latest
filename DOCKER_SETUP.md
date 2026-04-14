@@ -24,6 +24,7 @@ This project uses Docker with separate configurations for local development and 
 ## Local Development Testing
 
 ### Prerequisites
+
 - Docker Desktop installed
 - `production.env` file exists with correct credentials (Neon DB, DO Spaces, etc.)
 
@@ -90,7 +91,8 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml down
 ## Production Deployment
 
 ### Prerequisites
-- Domain DNS configured (care-bd.xyz pointing to server IP)
+
+- Domain DNS configured (carebod.xyz pointing to server IP)
 - Docker and docker-compose installed on server
 - Ports 80 and 443 open on server firewall
 
@@ -123,6 +125,7 @@ chmod +x init-letsencrypt.sh
 ```
 
 This script will:
+
 1. Create certbot directories
 2. Request SSL certificates from Let's Encrypt
 3. Start the full stack (app + nginx + certbot)
@@ -137,8 +140,8 @@ docker compose ps
 docker compose logs -f
 
 # Test HTTPS access
-curl https://api.care-bd.xyz
-curl https://care-bd.xyz
+curl https://api.carebod.xyz
+curl https://carebod.xyz
 ```
 
 ### Step 4: SSL Certificate Auto-Renewal
@@ -152,6 +155,7 @@ The certbot container automatically renews certificates every 12 hours. No manua
 ### Local Testing Issues
 
 **App won't start:**
+
 ```bash
 # Check logs
 docker compose logs app
@@ -164,6 +168,7 @@ docker compose build --no-cache
 ```
 
 **Database connection fails:**
+
 - Verify `production.env` has correct Neon DB credentials
 - Check Neon DB is accessible from your network
 - Check logs: `docker compose logs app | grep -i "postgres\|database"`
@@ -171,15 +176,18 @@ docker compose build --no-cache
 ### Production Issues
 
 **Nginx fails to start:**
+
 - SSL certificates must exist in `./certbot/conf/`
 - Run `./init-letsencrypt.sh` to generate them
 
 **SSL certificate errors:**
+
 - Verify domain DNS is pointing to correct IP
 - Check ports 80/443 are open: `ufw status` or `firewall-cmd --list-ports`
 - Check certbot logs: `docker compose logs certbot`
 
 **Container restarts:**
+
 ```bash
 # Check logs
 docker compose logs -f app
